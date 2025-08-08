@@ -3,7 +3,7 @@ package com.workforyou.backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Entity
+@Entity(name = "usuarios")
 @Data
 public class Usuario {
 
