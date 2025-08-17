@@ -15,16 +15,22 @@ public class Usuario {
     @Column(unique = true)
     private String email;
 
+    private String cpf;
+
+    private String telefone;
+
     private String senha;
 
     public Usuario(){
 
     }
 
-    public Usuario(Long id, String nome, String email, String senha) {
+    public Usuario(Long id, String nome, String email, String cpf, String telefone, String senha) {
         this.id = id;
         this.nome = nome;
         this.email = email;
+        this.cpf = cpf;
+        this.telefone = telefone;
         this.senha = senha;
     }
 }
