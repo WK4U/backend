@@ -23,6 +23,12 @@ public class AuthController {
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
 
+    public AuthController(UsuarioRepository usuarioRepository, UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.usuarioService = usuarioService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> register(@RequestBody Usuario usuario) {
