@@ -15,7 +15,7 @@ public class PasswordResetCode {
 
     private LocalDateTime expiracao;
 
-    private boolean usado;
+    private boolean tempo;
 
     @ManyToOne
     private Usuario usuario;
@@ -23,11 +23,11 @@ public class PasswordResetCode {
     public PasswordResetCode(){
     }
 
-    public PasswordResetCode(Long id, String code, LocalDateTime expiracao, boolean usado, Usuario usuario) {
+    public PasswordResetCode(Long id, String code, LocalDateTime expiracao, boolean tempo, Usuario usuario) {
         this.id = id;
         this.code = code;
         this.expiracao = expiracao;
-        this.usado = usado;
+        this.tempo = tempo;
         this.usuario = usuario;
     }
 
@@ -64,11 +64,11 @@ public class PasswordResetCode {
     }
 
     public boolean isUsado() {
-        return usado;
+        return tempo;
     }
 
     public void setUsado(boolean usado) {
-        this.usado = usado;
+        this.tempo = tempo;
     }
 }
 

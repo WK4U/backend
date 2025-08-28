@@ -1,12 +1,9 @@
 package com.workforyou.backend.service;
 
-import com.workforyou.backend.model.PasswordResetCode;
-import com.workforyou.backend.model.Usuario;
-import com.workforyou.backend.repository.PasswordResetCodeRepository;
-import com.workforyou.backend.repository.UsuarioRepository;
+import com.workforyou.backend.dto.RegistroRequest;
+import com.workforyou.backend.model.*;
+import com.workforyou.backend.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +13,65 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
+
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private PasswordResetCodeRepository passwordResetCodeRepository;
 
-    @Autowired
-    private EmailService emailService;
-
+    private final PasswordResetCodeRepository passwordResetCodeRepository;
+    private final EmailService emailService;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PessoaFisicaRepository pessoaFisicaRepository;
+    private final ClienteRepository clienteRepository;
+    private final PrestadorRepository prestadorRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
+    public void salvarNovoUsuario(RegistroRequest request) {
+        // Validação para evitar e-mail duplicado
+        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Este e-mail já está em uso.");
+        }
+
+        // 1. Criar e salvar a PessoaFisica
+        PessoaFisica novaPessoa = new PessoaFisica();
+        novaPessoa.setNome(request.getNome());
+
+        if (pessoaFisicaRepository.findByCpf(request.getCpf()).isPresent()) {
+            throw new RuntimeException("Este CPF já está em uso.");
+        }
+
+        novaPessoa.setCpf(request.getCpf());
+        novaPessoa.setTelefone(request.getTelefone());
+        novaPessoa.setDataNascimento(request.getDataNascimento());
+        PessoaFisica pessoaSalva = pessoaFisicaRepository.save(novaPessoa); //  injetar o PessoaFisicaRepository
+
+        // 2. Criar e salvar o Usuario, associando com a PessoaFisica
+        Usuario novoUsuario = new Usuario();
+        novoUsuario.setEmail(request.getEmail());
+        novoUsuario.setSenha(passwordEncoder.encode(request.getSenha())); // Lembre de criptografar a senha
+        novoUsuario.setPessoaFisica(pessoaSalva);
+        usuarioRepository.save(novoUsuario);
+
+        // 3. Criar o "papel" de Cliente ou Prestador
+        if ("CLIENTE".equalsIgnoreCase(request.getTipoUsuario())) {
+            Cliente novoCliente = new Cliente();
+            novoCliente.setPessoaFisica(pessoaSalva);
+            clienteRepository.save(novoCliente); // injetar o ClienteRepository
+        } else if ("PRESTADOR".equalsIgnoreCase(request.getTipoUsuario())) {
+            Prestador novoPrestador = new Prestador();
+            novoPrestador.setPessoaFisica(pessoaSalva);
+
+            novoPrestador.setEspecialidade(request.getEspecialidade());
+            novoPrestador.setDescricaoServico(request.getDescricaoServico());
+
+            //  definir outros campos do prestador, se vierem no DTO
+            prestadorRepository.save(novoPrestador); // injetar o PrestadorRepository
+        } else {
+            // Lançar um erro se o tipo de usuário for inválido
+            throw new RuntimeException("Tipo de usuário inválido.");
+        }
     }
 
-
-    public Usuario salvarUsuario(Usuario usuario) {
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        return usuarioRepository.save(usuario);
-    }
 
    public void solicitarRecuperacaoSenhaPorPin(String email){
         Usuario usuario = usuarioRepository.findByEmail(email)
