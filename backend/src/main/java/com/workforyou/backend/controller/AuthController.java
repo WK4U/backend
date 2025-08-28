@@ -2,6 +2,7 @@ package com.workforyou.backend.controller;
 
 import com.workforyou.backend.dto.LoginRequest;
 import com.workforyou.backend.dto.LoginResponse;
+import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.Usuario;
 import com.workforyou.backend.config.JwtUtil;
 import com.workforyou.backend.repository.UsuarioRepository;
@@ -23,17 +24,15 @@ public class AuthController {
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UsuarioRepository usuarioRepository, UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.usuarioService = usuarioService;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-
     @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> register(@RequestBody Usuario usuario) {
-        usuarioService.salvarUsuario(usuario);
-        return ResponseEntity.ok("Usuário registrado com sucesso!");
+    public ResponseEntity<?> register(@RequestBody RegistroRequest request) {
+        try{
+
+            usuarioService.salvarNovoUsuario(request);
+            return ResponseEntity.ok("Usuário registrado com sucesso!");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(409).body(ex.getMessage());
+        }
     }
 
     @PostMapping(path = "/login", consumes = {MediaType.APPLICATION_JSON_VALUE})
