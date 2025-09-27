@@ -12,17 +12,14 @@ import java.time.LocalDate;
 @NoArgsConstructor // Gera o construtor vazio para o JPA
 @AllArgsConstructor // Gera o construtor com todos os campos
 public class Usuario {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
-    private String email;
+    private String documento;
 
     private String senha;
 
-    // Relacionamento 1 para 1 com a PessoaFisica
-    @OneToOne
-    // Especifica que a coluna "id_pessoa_fisica" nesta tabela é a chave estrangeira
-    @JoinColumn(name = "id_pessoa_fisica", referencedColumnName = "id")
-    private PessoaFisica pessoaFisica;
+    private char TipoUsuario; // j ou f
 }

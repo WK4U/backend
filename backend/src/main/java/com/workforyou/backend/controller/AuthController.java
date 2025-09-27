@@ -27,7 +27,6 @@ public class AuthController {
     @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> register(@RequestBody RegistroRequest request) {
         try{
-
             usuarioService.salvarNovoUsuario(request);
             return ResponseEntity.ok("Usuário registrado com sucesso!");
         } catch (RuntimeException ex) {

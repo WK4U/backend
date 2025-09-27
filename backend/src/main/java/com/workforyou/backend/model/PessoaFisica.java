@@ -25,8 +25,4 @@ public class PessoaFisica {
     private String telefone;
 
     private LocalDate dataNascimento;
-
-    @OneToOne(mappedBy = "pessoaFisica")
-    private Usuario usuario;
-
 }

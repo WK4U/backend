@@ -17,10 +17,15 @@ public class Prestador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String urlFoto;
+
+    @Column(unique = true)
+    private String email;
+
     // Relacionamento 1 para 1 com a PessoaFisica
     @OneToOne
     @JoinColumn(name = "id_pessoa_fisica", referencedColumnName = "id")
-    private PessoaFisica pessoaFisica;
+    private PessoaJuridica pessoaJuridica;
 
     // Campos específicos do prestador
     private String especialidade;

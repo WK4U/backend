@@ -15,10 +15,13 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String email;
+
+    private String urlFoto;
+
     // Relacionamento 1 para 1 com a PessoaFisica
     @OneToOne
     @JoinColumn(name = "id_pessoa_fisica", referencedColumnName = "id")
-    private PessoaFisica pessoaFisica;
-
-
+    private PessoaFisica pessoaFisica; // j ou f
 }
