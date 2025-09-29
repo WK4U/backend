@@ -25,6 +25,6 @@ public class PessoaFisica {
     private String telefone;
 
     @Column
-    @Date    
-    private LocalDate dataNascimento;
+    @Temporal(TemporalType.DATE)
+    private Calendar dataNascimento;
 }
