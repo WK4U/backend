@@ -28,7 +28,5 @@ public class Postagem {
     @JoinColumn(name = "id_servico")
     private Servico servico;
 
-    @ManyToOne
-    @JoinColumn(name = "id_contrato")
-    private Contrato contrato;
+   
 }
