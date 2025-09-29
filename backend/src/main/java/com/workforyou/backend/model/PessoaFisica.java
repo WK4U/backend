@@ -24,5 +24,7 @@ public class PessoaFisica {
 
     private String telefone;
 
+    @Column
+    @Date    
     private LocalDate dataNascimento;
 }
