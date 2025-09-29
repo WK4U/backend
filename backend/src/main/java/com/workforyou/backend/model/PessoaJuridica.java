@@ -11,4 +11,9 @@ public class PessoaJuridica {
 
     private String telefone;
 
+    @Column
+    @Temporal(TemporalType.DATE)
+    private Calendar dataExistencia;
+
 }
+
