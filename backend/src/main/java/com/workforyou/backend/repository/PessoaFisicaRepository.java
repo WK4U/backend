@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface PessoaFisicaRepository extends JpaRepository<PessoaFisica, Long> {
     // Busca uma PessoaFisica pelo campo "cpf".
-    Optional<Object> findByCpf(String email);
+    Optional<Object> findByCpf(String cpf);
 }
