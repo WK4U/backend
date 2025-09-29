@@ -29,5 +29,4 @@ public class Prestador {
 
     // Campos específicos do prestador
     private String especialidade;
-    private String descricaoServico;
 }
