@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface PrestadorRepository extends JpaRepository<Prestador, Long> {
     // Busca um Prestador navegando por:
-    // Prestador -> pessoaFisica -> usuario -> email
-    Optional<Prestador> findByPessoaFisicaUsuarioEmail(String email);
+    // Prestador -> pessoaJuridica -> usuario -> CNPJ
+    Optional<Prestador> findByPessoaJuridicaUsuarioCpf(String cpf);
 }
