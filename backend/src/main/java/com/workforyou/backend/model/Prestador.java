@@ -17,6 +17,7 @@ public class Prestador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String urlFoto;
 
     @Column(unique = true)
