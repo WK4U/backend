@@ -28,5 +28,6 @@ public class Prestador {
     private PessoaJuridica pessoaJuridica;
 
     // Campos específicos do prestador
+    @Column
     private String especialidade;
 }
