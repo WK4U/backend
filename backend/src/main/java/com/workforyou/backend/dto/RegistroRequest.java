@@ -2,12 +2,15 @@ package com.workforyou.backend.dto;
 
 import lombok.Data;
 import java.time.LocalDate;
+import java.util.Calendar;
 
 @Data
 public class RegistroRequest {
 
     private String nome;
     private String telefone;
+
+    private String uriFoto;
 
     // Dados da PessoaFisica
     private String cpf;
