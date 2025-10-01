@@ -7,5 +7,5 @@ import java.util.Optional;
 public interface PrestadorRepository extends JpaRepository<Prestador, Long> {
     // Busca um Prestador navegando por:
     // Prestador -> pessoaJuridica -> usuario -> CNPJ
-    Optional<Prestador> findByPessoaJuridicaUsuarioCpf(String cpf);
+    Optional<Prestador> findByPessoaJuridicaCnpj(String cnpj);
 }

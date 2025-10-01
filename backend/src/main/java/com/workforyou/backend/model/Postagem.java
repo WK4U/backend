@@ -1,9 +1,7 @@
 package com.workforyou.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "fotos")
@@ -16,16 +14,20 @@ public class Postagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    @Getter @Setter
     private String urlFoto;
 
     // Relacionamentos para a entidade a qual a foto pertence
     // Um dos campos abaixo será preenchido
     @ManyToOne
     @JoinColumn(name = "id_prestador")
+    @Getter @Setter
     private Prestador prestador;
 
     @ManyToOne
     @JoinColumn(name = "id_servico")
+    @Getter @Setter
     private Servico servico;
 
    

@@ -1,9 +1,7 @@
 package com.workforyou.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "servicos")
@@ -16,7 +14,20 @@ public class Servico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    @Getter @Setter
     private String nomeServico;
+
+    @Column
+    @Getter @Setter
     private String tipoServico;
+
+    @Column
+    @Getter @Setter
     private String descricao;
+
+    @ManyToOne
+    @JoinColumn(name = "id_prestador")
+    @Getter @Setter
+    private Prestador prestador;
 }

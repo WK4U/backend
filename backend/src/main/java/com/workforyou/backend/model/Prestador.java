@@ -1,10 +1,7 @@
 package com.workforyou.backend.model;
 
-import com.workforyou.backend.model.PessoaFisica;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "prestadores")
@@ -18,17 +15,21 @@ public class Prestador {
     private Long id;
 
     @Column
+    @Getter @Setter
     private String urlFoto;
 
     @Column(unique = true)
+    @Getter @Setter
     private String email;
 
     // Relacionamento 1 para 1 com a PessoaFisica
     @OneToOne
     @JoinColumn(name = "id_pessoa_fisica", referencedColumnName = "id")
+    @Getter @Setter
     private PessoaJuridica pessoaJuridica;
 
     // Campos específicos do prestador
     @Column
+    @Getter @Setter
     private String especialidade;
 }

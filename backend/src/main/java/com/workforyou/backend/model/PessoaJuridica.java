@@ -15,6 +15,7 @@ public class PessoaJuridica {
     private Long id;
 
     @Getter @Setter
+    @Column
     private String nome;
 
     @Getter @Setter
@@ -22,6 +23,7 @@ public class PessoaJuridica {
     private String cnpj;
 
     @Getter @Setter
+    @Column
     private String telefone;
 }
 

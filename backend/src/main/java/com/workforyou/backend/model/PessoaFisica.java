@@ -17,6 +17,7 @@ public class PessoaFisica {
     private Long id;
 
     @Getter @Setter
+    @Column
     private String nome;
 
     @Getter @Setter
@@ -24,6 +25,7 @@ public class PessoaFisica {
     private String cpf;
 
     @Getter @Setter
+    @Column
     private String telefone;
 
     @Getter @Setter

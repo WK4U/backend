@@ -4,6 +4,7 @@ import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.*;
 import com.workforyou.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,28 @@ import java.util.Optional;
 public class UsuarioService {
 
 
+    @Autowired
     private final PasswordResetCodeRepository passwordResetCodeRepository;
+
+    @Autowired
     private final EmailService emailService;
+
+    @Autowired
     private final UsuarioRepository usuarioRepository;
+
+    @Autowired
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
     private final PessoaFisicaRepository pessoaFisicaRepository;
+
+    @Autowired
     private final ClienteRepository clienteRepository;
+
+    @Autowired
     private final PrestadorRepository prestadorRepository;
+
+    @Autowired
     private final PessoaJuridicaRepository pessoaJuridicaRepository;
 
     public void salvarNovoUsuario(RegistroRequest request) {

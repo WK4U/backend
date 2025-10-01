@@ -18,6 +18,7 @@ public class Cliente {
     private String email;
 
     @Getter @Setter
+    @Column
     private String urlFoto;
 
     // Relacionamento 1 para 1 com a PessoaFisica
