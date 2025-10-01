@@ -18,11 +18,11 @@ import java.util.Optional;
 public class PostagemService {
 
     @Autowired
-    private final PostagemRepository postagemRepository;
+    private PostagemRepository postagemRepository;
     @Autowired
-    private final ServicoRepository servicoRepository;
+    private ServicoRepository servicoRepository;
     @Autowired
-    private final PrestadorRepository prestadorRepository;
+    private PrestadorRepository prestadorRepository;
 
     public void salvarNovaPostagem(String foto,String cnpj,Long idServico){
         Postagem postagem = new Postagem();

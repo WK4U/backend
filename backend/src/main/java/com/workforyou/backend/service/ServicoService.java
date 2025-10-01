@@ -16,9 +16,9 @@ import java.util.Optional;
 public class ServicoService {
 
     @Autowired
-    private final ServicoRepository servicoRepository;
+    private ServicoRepository servicoRepository;
     @Autowired
-    private final PrestadorRepository prestadorRepository;
+    private PrestadorRepository prestadorRepository;
 
     public void salvarServico(String nomeServico, String tipoServico, String descricao, String cnpj){
         Servico servico = new Servico();

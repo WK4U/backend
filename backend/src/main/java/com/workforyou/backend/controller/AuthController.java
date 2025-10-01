@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegistroRequest request) {
         try{
             usuarioService.salvarNovoUsuario(request);
-            return ResponseEntity.ok("Usuário registrado com sucesso!");
+            return ResponseEntity.ok("Conta registrada com sucesso!");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(409).body(ex.getMessage());
         }

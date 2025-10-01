@@ -19,28 +19,28 @@ public class UsuarioService {
 
 
     @Autowired
-    private final PasswordResetCodeRepository passwordResetCodeRepository;
+    private PasswordResetCodeRepository passwordResetCodeRepository;
 
     @Autowired
-    private final EmailService emailService;
+    private EmailService emailService;
 
     @Autowired
-    private final UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private final PessoaFisicaRepository pessoaFisicaRepository;
+    private PessoaFisicaRepository pessoaFisicaRepository;
 
     @Autowired
-    private final ClienteRepository clienteRepository;
+    private ClienteRepository clienteRepository;
 
     @Autowired
-    private final PrestadorRepository prestadorRepository;
+    private  PrestadorRepository prestadorRepository;
 
     @Autowired
-    private final PessoaJuridicaRepository pessoaJuridicaRepository;
+    private PessoaJuridicaRepository pessoaJuridicaRepository;
 
     public void salvarNovoUsuario(RegistroRequest request) {
         // Validação para evitar e-mail duplicado
