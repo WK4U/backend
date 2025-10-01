@@ -11,7 +11,7 @@ public class RegistroRequest {
 
     // Dados da PessoaFisica
     private String cpf;
-    private LocalDate dataNascimento;
+    private Calendar dataNascimento;
 
     // Dados da PessoaJuridica
     private String cnpj;
