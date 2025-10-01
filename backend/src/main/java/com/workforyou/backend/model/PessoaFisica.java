@@ -1,10 +1,8 @@
 package com.workforyou.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+import lombok.*;
+
 import java.util.Calendar;
 
 @Entity
@@ -18,54 +16,20 @@ public class PessoaFisica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter @Setter
     private String nome;
 
+    @Getter @Setter
     @Column(unique = true)
     private String cpf;
 
+    @Getter @Setter
     private String telefone;
 
+    @Getter @Setter
     @Column
     @Temporal(TemporalType.DATE)
     private Calendar dataNascimento;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public Calendar getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(Calendar dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
 }

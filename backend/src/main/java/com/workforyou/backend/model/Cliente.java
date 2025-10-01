@@ -1,9 +1,7 @@
 package com.workforyou.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity(name = "clientes")
 @Data
@@ -16,12 +14,15 @@ public class Cliente {
     private Long id;
 
     @Column(unique = true)
+    @Getter @Setter
     private String email;
 
+    @Getter @Setter
     private String urlFoto;
 
     // Relacionamento 1 para 1 com a PessoaFisica
     @OneToOne
     @JoinColumn(name = "id_pessoa_fisica", referencedColumnName = "id")
+    @Getter @Setter
     private PessoaFisica pessoaFisica; // j ou f
 }

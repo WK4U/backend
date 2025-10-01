@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 
@@ -25,6 +24,7 @@ public class UsuarioService {
     private final PessoaFisicaRepository pessoaFisicaRepository;
     private final ClienteRepository clienteRepository;
     private final PrestadorRepository prestadorRepository;
+    private final PessoaJuridicaRepository pessoaJuridicaRepository;
 
     public void salvarNovoUsuario(RegistroRequest request) {
         // Validação para evitar e-mail duplicado
@@ -32,48 +32,61 @@ public class UsuarioService {
             throw new RuntimeException("Este e-mail já está em uso.");
         }
 
-        if(request.getTipoUsuario().toUpperCase().equals("FISICO")){
-            PessoaFisica fisica = new PessoaFisica();
-            fisica.setCpf(request.getCpf());
-            fisica.setNome(request.getNome());
-            fisica.setTelefone(request.getTelefone());
-            fisica.setDataNascimento(request.getDataNascimento());
+        if (request.getTipoUsuario().equalsIgnoreCase("FISICO")) {
+            if (pessoaFisicaRepository.findByCpf(request.getCpf()).isPresent()) {
+                throw new RuntimeException("Este CPF já está em uso.");
+            } else {
+                PessoaFisica fisica = new PessoaFisica();
+
+                fisica.setCpf(request.getCpf());
+                fisica.setNome(request.getNome());
+                fisica.setTelefone(request.getTelefone());
+                fisica.setDataNascimento(request.getDataNascimento());
+
+                pessoaFisicaRepository.save(fisica);
+
+                Usuario userFisico = new Usuario();
+                userFisico.setSenha(request.getSenha()); // A senha já vem criptografada pelo front-end
+                userFisico.setTipoUsuario('f');
+                userFisico.setDocumento(fisica.getCpf());
+
+                usuarioRepository.save(userFisico);
+
+                Cliente cliente = new Cliente();
+                cliente.setUrlFoto(request.getUriFoto());
+                cliente.setEmail(request.getEmail());
+                cliente.setPessoaFisica(fisica);
+
+                clienteRepository.save(cliente);
+            }
         }
+        if (request.getTipoUsuario().equalsIgnoreCase("JURIDICO")) {
+            if (pessoaJuridicaRepository.findByCnpj(request.getCnpj()).isPresent()) {
+                throw new RuntimeException("Este CNPJ já está em uso.");
+            } else {
+                PessoaJuridica juridica = new PessoaJuridica();
 
+                juridica.setNome(request.getNome());
+                juridica.setCnpj(request.getCnpj());
+                juridica.setTelefone(request.getTelefone());
 
-        if (pessoaFisicaRepository.findByCpf(request.getCpf()).isPresent()) {
-            throw new RuntimeException("Este CPF já está em uso.");
-        }
+                pessoaJuridicaRepository.save(juridica);
 
-        novaPessoa.setCpf(request.getCpf());
-        novaPessoa.setTelefone(request.getTelefone());
-        novaPessoa.setDataNascimento(request.getDataNascimento());
-        PessoaFisica pessoaSalva = pessoaFisicaRepository.save(novaPessoa); //  injetar o PessoaFisicaRepository
+                Usuario userJuridico = new Usuario();
+                userJuridico.setDocumento(juridica.getCnpj());
+                userJuridico.setTipoUsuario('j');
+                userJuridico.setSenha(request.getSenha());
 
-        // 2. Criar e salvar o Usuario, associando com a PessoaFisica
-        Usuario novoUsuario = new Usuario();
-        novoUsuario.setEmail(request.getEmail());
-        novoUsuario.setSenha(passwordEncoder.encode(request.getSenha())); // Lembre de criptografar a senha
-        novoUsuario.setPessoaFisica(pessoaSalva);
-        usuarioRepository.save(novoUsuario);
+                usuarioRepository.save(userJuridico);
 
-        // 3. Criar o "papel" de Cliente ou Prestador
-        if ("CLIENTE".equalsIgnoreCase(request.getTipoUsuario())) {
-            Cliente novoCliente = new Cliente();
-            novoCliente.setPessoaFisica(pessoaSalva);
-            clienteRepository.save(novoCliente); // injetar o ClienteRepository
-        } else if ("PRESTADOR".equalsIgnoreCase(request.getTipoUsuario())) {
-            Prestador novoPrestador = new Prestador();
-            novoPrestador.setPessoaFisica(pessoaSalva);
+                Prestador prestador = new Prestador();
+                prestador.setEmail(request.getEmail());
+                prestador.setEspecialidade(request.getEspecialidade());
+                prestador.setUrlFoto(request.getUriFoto());
+                prestador.setPessoaJuridica(juridica);
 
-            novoPrestador.setEspecialidade(request.getEspecialidade());
-            novoPrestador.setDescricaoServico(request.getDescricaoServico());
-
-            //  definir outros campos do prestador, se vierem no DTO
-            prestadorRepository.save(novoPrestador); // injetar o PrestadorRepository
-        } else {
-            // Lançar um erro se o tipo de usuário for inválido
-            throw new RuntimeException("Tipo de usuário inválido.");
+                prestadorRepository.save(prestador);
+            }
         }
     }
 
@@ -114,9 +127,9 @@ public class UsuarioService {
             return false;
         }
 
-
         return true;
     }
+
     public boolean atualizarSenhaComToken(String code, String novaSenha) {
 
         Optional<PasswordResetCode> opt = passwordResetCodeRepository.findByCode(code);

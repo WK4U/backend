@@ -1,19 +1,27 @@
 package com.workforyou.backend.model;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Entity
+@Table(name = "pessoas_juridicas")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PessoaJuridica {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Getter @Setter
     private String nome;
 
+    @Getter @Setter
     @Column(unique = true)
     private String cnpj;
 
+    @Getter @Setter
     private String telefone;
-
-    @Column
-    @Temporal(TemporalType.DATE)
-    private Calendar dataExistencia;
-
 }
 
