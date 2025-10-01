@@ -3,7 +3,6 @@ package com.workforyou.backend.controller;
 import com.workforyou.backend.dto.LoginRequest;
 import com.workforyou.backend.dto.LoginResponse;
 import com.workforyou.backend.dto.RegistroRequest;
-import com.workforyou.backend.model.Usuario;
 import com.workforyou.backend.config.JwtUtil;
 import com.workforyou.backend.repository.UsuarioRepository;
 import com.workforyou.backend.service.UsuarioService;
