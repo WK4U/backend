@@ -32,9 +32,14 @@ public class UsuarioService {
             throw new RuntimeException("Este e-mail já está em uso.");
         }
 
-        // 1. Criar e salvar a PessoaFisica
-        PessoaFisica novaPessoa = new PessoaFisica();
-        novaPessoa.setNome(request.getNome());
+        if(request.getTipoUsuario().toUpperCase().equals("FISICO")){
+            PessoaFisica fisica = new PessoaFisica();
+            fisica.setCpf(request.getCpf());
+            fisica.setNome(request.getNome());
+            fisica.setTelefone(request.getTelefone());
+            fisica.setDataNascimento(request.getDataNascimento());
+        }
+
 
         if (pessoaFisicaRepository.findByCpf(request.getCpf()).isPresent()) {
             throw new RuntimeException("Este CPF já está em uso.");
