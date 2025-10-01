@@ -1,7 +1,6 @@
 package com.workforyou.backend.dto;
 
 import lombok.Data;
-import java.time.LocalDate;
 import java.util.Calendar;
 
 @Data
