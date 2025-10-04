@@ -17,6 +17,10 @@ public class Postagem {
     @Getter @Setter
     private String urlFoto;
 
+    @Column
+    @Getter @Setter
+    private String descricao;
+
     // Relacionamentos para a entidade a qual a foto pertence
     // Um dos campos abaixo será preenchido
     @ManyToOne
