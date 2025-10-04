@@ -1,7 +1,7 @@
 package com.workforyou.backend.service;
 import com.workforyou.backend.model.*;
 import com.workforyou.backend.repository.*;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -9,12 +9,16 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UsuarioService {
 
-    private final PasswordResetCodeRepository passwordResetCodeRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final EmailService emailService;
+    @Autowired
+    private PasswordResetCodeRepository passwordResetCodeRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public Usuario criarUsuario(String email, String senha, char tipoUsuario, String documento) {
 

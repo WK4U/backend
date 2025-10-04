@@ -3,14 +3,14 @@ package com.workforyou.backend.service;
 import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.PessoaJuridica;
 import com.workforyou.backend.repository.PessoaJuridicaRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class JuridicaService {
 
-    private final PessoaJuridicaRepository pessoaJuridicaRepository; // Você precisará deste repositório
+    @Autowired
+    private PessoaJuridicaRepository pessoaJuridicaRepository; // Você precisará deste repositório
 
     public PessoaJuridica criarPessoaJuridica(RegistroRequest request) {
 

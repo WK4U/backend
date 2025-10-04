@@ -3,8 +3,7 @@ package com.workforyou.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "prestadores")
+@Entity(name = "prestadores")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +23,7 @@ public class Prestador {
 
     // Relacionamento 1 para 1 com a PessoaFisica
     @OneToOne
-    @JoinColumn(name = "id_pessoa_fisica", referencedColumnName = "id")
+    @JoinColumn(name = "id_pessoa_juridica", referencedColumnName = "id")
     @Getter @Setter
     private PessoaJuridica pessoaJuridica;
 

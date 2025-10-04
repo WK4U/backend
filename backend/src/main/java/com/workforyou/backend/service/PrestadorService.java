@@ -4,14 +4,12 @@ import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.PessoaJuridica;
 import com.workforyou.backend.model.Prestador;
 import com.workforyou.backend.repository.PrestadorRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class PrestadorService {
 
-    private final PrestadorRepository prestadorRepository; // Você precisará deste repositório
+    private PrestadorRepository prestadorRepository; // Você precisará deste repositório
 
     /**
      * Cria e salva a entidade Prestador no banco de dados.

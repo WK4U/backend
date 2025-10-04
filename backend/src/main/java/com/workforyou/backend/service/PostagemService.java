@@ -7,14 +7,12 @@ import com.workforyou.backend.model.Servico;
 import com.workforyou.backend.repository.PostagemRepository;
 import com.workforyou.backend.repository.PrestadorRepository;
 import com.workforyou.backend.repository.ServicoRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class PostagemService {
 
     @Autowired

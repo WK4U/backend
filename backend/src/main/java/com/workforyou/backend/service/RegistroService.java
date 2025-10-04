@@ -3,18 +3,26 @@ package com.workforyou.backend.service;
 import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.PessoaFisica;
 import com.workforyou.backend.model.PessoaJuridica;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class RegistroService {
 
-    private final UsuarioService usuarioService;
-    private final FisicaService fisicaService;
-    private final JuridicaService juridicaService;
-    private final ClienteService clienteService;
-    private final PrestadorService prestadorService;
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private FisicaService fisicaService;
+
+    @Autowired
+    private JuridicaService juridicaService;
+
+    @Autowired
+    private ClienteService clienteService;
+
+    @Autowired
+    private PrestadorService prestadorService;
 
     public void salvarNovoUsuario(RegistroRequest request) {
         if(usuarioService.verificarEmailExistente(request.getEmail())){
