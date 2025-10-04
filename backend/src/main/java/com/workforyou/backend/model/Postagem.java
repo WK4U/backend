@@ -3,8 +3,7 @@ package com.workforyou.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "fotos")
+@Entity(name = "postagens")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
