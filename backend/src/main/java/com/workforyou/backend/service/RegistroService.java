@@ -50,13 +50,20 @@ public class RegistroService {
     }
 
     private void salvarUsuarioJuridico(RegistroRequest request) {
-        // 1. Cria PessoaJuridica
-        PessoaJuridica juridica = juridicaService.criarPessoaJuridica(request);
 
-        // 2. Cria Prestador
-        prestadorService.criarPrestador(request, juridica);
+        if(juridicaService.verificarCnpj(request.getCnpj())){
+            // 1. Cria PessoaJuridica
+            PessoaJuridica juridica = juridicaService.criarPessoaJuridica(request);
 
-        // 3. Cria Usuário de Login
-        usuarioService.criarUsuario(request.getEmail(), request.getSenha(), 'j', juridica.getCnpj());
+            // 2. Cria Prestador
+            prestadorService.criarPrestador(request, juridica);
+
+            // 3. Cria Usuário de Login
+            usuarioService.criarUsuario(request.getEmail(), request.getSenha(), 'j', juridica.getCnpj());
+        }else{
+            throw new RuntimeException("CNPJ JÁ CADASTRADO!");
+        }
+
+
     }
 }

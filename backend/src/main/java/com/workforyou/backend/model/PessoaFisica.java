@@ -3,7 +3,8 @@ package com.workforyou.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Calendar;
+import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "pessoas_fisicas")
@@ -30,8 +31,7 @@ public class PessoaFisica {
 
     @Getter @Setter
     @Column
-    @Temporal(TemporalType.DATE)
-    private Calendar dataNascimento;
+    private LocalDate dataNascimento;
 
 
 }

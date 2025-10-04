@@ -21,4 +21,12 @@ public class JuridicaService {
 
         return pessoaJuridicaRepository.save(juridica);
     }
+
+    public boolean verificarCnpj(String cnpj){
+        if(pessoaJuridicaRepository.findByCnpj(cnpj).isPresent()){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

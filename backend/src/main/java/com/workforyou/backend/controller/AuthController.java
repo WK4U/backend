@@ -23,7 +23,6 @@ public class AuthController {
     private final RegistroService registroService;
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
-    private final PasswordEncoder passwordEncoder;
 
     @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> register(@RequestBody RegistroRequest request) {
@@ -40,7 +39,7 @@ public class AuthController {
         var usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
+        if (!usuario.getSenha().equals(request.getSenha())) {
             return ResponseEntity.status(401).body("Senha inválida");
         }
 

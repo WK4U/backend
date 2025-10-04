@@ -1,7 +1,8 @@
 package com.workforyou.backend.dto;
 
 import lombok.Data;
-import java.util.Calendar;
+
+import java.time.LocalDate;
 
 @Data
 public class RegistroRequest {
@@ -13,7 +14,7 @@ public class RegistroRequest {
 
     // Dados da PessoaFisica
     private String cpf;
-    private Calendar dataNascimento;
+    private LocalDate dataNascimento;
 
     // Dados da PessoaJuridica
     private String cnpj;
@@ -27,5 +28,4 @@ public class RegistroRequest {
 
     //Dados do prestador
     private String especialidade;
-    private String descricaoServico;
 }
