@@ -1,25 +1,26 @@
 package com.workforyou.backend.service;
 
+import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.PessoaFisica;
 import com.workforyou.backend.repository.PessoaFisicaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-
 @Service
+@RequiredArgsConstructor
 public class FisicaService {
 
-    @Autowired
-    PessoaFisicaRepository pessoaFisicaRepository;
+    private final PessoaFisicaRepository pessoaFisicaRepository;
 
-    public void salvarNovaPessoaFisica(String nome, String cpf, String telefone, Calendar dataNascimento){
-        PessoaFisica pessoaFisica = new PessoaFisica();
-        pessoaFisica.setNome(nome);
-        pessoaFisica.setCpf(cpf);
-        pessoaFisica.setTelefone(telefone);
-        pessoaFisica.setDataNascimento(dataNascimento);
+    public PessoaFisica criarPessoaFisica(RegistroRequest request) {
 
-        pessoaFisicaRepository.save(pessoaFisica);
+        PessoaFisica fisica = new PessoaFisica();
+        fisica.setCpf(request.getCpf());
+        fisica.setNome(request.getNome());
+        fisica.setTelefone(request.getTelefone());
+        // Lembre-se que você pode precisar de um conversor de String para Calendar
+        // fisica.setDataNascimento(request.getDataNascimento()); // Assumindo Calendar
+
+        return pessoaFisicaRepository.save(fisica);
     }
 }

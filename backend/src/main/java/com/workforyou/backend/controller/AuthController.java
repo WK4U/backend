@@ -5,6 +5,7 @@ import com.workforyou.backend.dto.LoginResponse;
 import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.config.JwtUtil;
 import com.workforyou.backend.repository.UsuarioRepository;
+import com.workforyou.backend.service.RegistroService;
 import com.workforyou.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final RegistroService registroService;
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
@@ -26,7 +28,7 @@ public class AuthController {
     @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> register(@RequestBody RegistroRequest request) {
         try{
-            usuarioService.salvarNovoUsuario(request);
+            registroService.salvarNovoUsuario(request);
             return ResponseEntity.ok("Conta registrada com sucesso!");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(409).body(ex.getMessage());

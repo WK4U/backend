@@ -1,23 +1,24 @@
 package com.workforyou.backend.service;
 
+import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.Cliente;
 import com.workforyou.backend.model.PessoaFisica;
 import com.workforyou.backend.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
 
-    public void salvarNovoCliente(String email, String foto, PessoaFisica pessoaFisica){
+    public Cliente criarCliente(RegistroRequest request, PessoaFisica pessoaFisica) {
         Cliente cliente = new Cliente();
-        cliente.setEmail(email);
-        cliente.setUrlFoto(foto);
+        cliente.setUrlFoto(request.getUriFoto());
+        cliente.setEmail(request.getEmail());
         cliente.setPessoaFisica(pessoaFisica);
 
-        clienteRepository.save(cliente);
+        return clienteRepository.save(cliente);
     }
 }

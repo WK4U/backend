@@ -1,11 +1,7 @@
 package com.workforyou.backend.service;
-
-import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.*;
 import com.workforyou.backend.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -13,97 +9,22 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-
 @RequiredArgsConstructor
 public class UsuarioService {
 
+    private final PasswordResetCodeRepository passwordResetCodeRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EmailService emailService;
 
-    @Autowired
-    private PasswordResetCodeRepository passwordResetCodeRepository;
+    public Usuario criarUsuario(String email, String senha, char tipoUsuario, String documento) {
 
-    @Autowired
-    private EmailService emailService;
+        Usuario user = new Usuario();
+        user.setEmail(email);
+        user.setSenha(senha); // A senha já vem criptografada
+        user.setTipoUsuario(tipoUsuario);
+        user.setDocumento(documento); // CPF ou CNPJ
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private PessoaFisicaRepository pessoaFisicaRepository;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private  PrestadorRepository prestadorRepository;
-
-    @Autowired
-    private PessoaJuridicaRepository pessoaJuridicaRepository;
-
-    public void salvarNovoUsuario(RegistroRequest request) {
-        // É PRECISO QUEBRAR O FLUXO DE "CRIAR USUÁRIO", ATUALMENTE ESTÁ FAZENDO COISAS DEMAIS. QUEBRAR ELE NOS SERVICES CRIADOS: FisicaService,JuridicaService,ClienteService,PrestadorService.
-        // OBS.: SE QUISER CRIAR OUTRO SERVICE QUE FAÇA A UTILIZAÇÃO DO REGISTRO REQUEST E FAÇA A UTILIZAÇÃO DE TODOS OS OUTROS SERVICES NA CRIAÇÃO DO REGISTRO, EU APOIO.
-
-
-//        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
-//            throw new RuntimeException("Este e-mail já está em uso.");
-//        }
-//
-//        if (request.getTipoUsuario().equalsIgnoreCase("FISICO")) {
-//            if (pessoaFisicaRepository.findByCpf(request.getCpf()).isPresent()) {
-//                throw new RuntimeException("Este CPF já está em uso.");
-//            } else {
-//                PessoaFisica fisica = new PessoaFisica();
-//
-//                fisica.setCpf(request.getCpf());
-//                fisica.setNome(request.getNome());
-//                fisica.setTelefone(request.getTelefone());
-//                fisica.setDataNascimento(request.getDataNascimento());
-//
-//                pessoaFisicaRepository.save(fisica);
-//
-//                Usuario userFisico = new Usuario();
-//                userFisico.setSenha(request.getSenha()); // A senha já vem criptografada pelo front-end
-//                userFisico.setTipoUsuario('f');
-//                userFisico.setDocumento(fisica.getCpf());
-//
-//                usuarioRepository.save(userFisico);
-//
-//                Cliente cliente = new Cliente();
-//                cliente.setUrlFoto(request.getUriFoto());
-//                cliente.setEmail(request.getEmail());
-//                cliente.setPessoaFisica(fisica);
-//
-//                clienteRepository.save(cliente);
-//            }
-//        }
-//        if (request.getTipoUsuario().equalsIgnoreCase("JURIDICO")) {
-//            if (pessoaJuridicaRepository.findByCnpj(request.getCnpj()).isPresent()) {
-//                throw new RuntimeException("Este CNPJ já está em uso.");
-//            } else {
-//                PessoaJuridica juridica = new PessoaJuridica();
-//
-//                juridica.setNome(request.getNome());
-//                juridica.setCnpj(request.getCnpj());
-//                juridica.setTelefone(request.getTelefone());
-//
-//                pessoaJuridicaRepository.save(juridica);
-//
-//                Usuario userJuridico = new Usuario();
-//                userJuridico.setDocumento(juridica.getCnpj());
-//                userJuridico.setTipoUsuario('j');
-//                userJuridico.setSenha(request.getSenha());
-//
-//                usuarioRepository.save(userJuridico);
-//
-//                Prestador prestador = new Prestador();
-//                prestador.setEmail(request.getEmail());
-//                prestador.setEspecialidade(request.getEspecialidade());
-//                prestador.setUrlFoto(request.getUriFoto());
-//                prestador.setPessoaJuridica(juridica);
-//
-//                prestadorRepository.save(prestador);
-//            }
-//        }
+        return usuarioRepository.save(user);
     }
 
 
@@ -170,5 +91,13 @@ public class UsuarioService {
         passwordResetCodeRepository.save(resetCode);
 
         return true;
+    }
+
+    public boolean verificarEmailExistente(String email){
+        if(usuarioRepository.findByEmail(email).isPresent()){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
