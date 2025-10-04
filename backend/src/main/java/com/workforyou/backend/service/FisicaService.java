@@ -18,9 +18,20 @@ public class FisicaService {
         fisica.setCpf(request.getCpf());
         fisica.setNome(request.getNome());
         fisica.setTelefone(request.getTelefone());
-        // Lembre-se que você pode precisar de um conversor de String para Calendar
-        // fisica.setDataNascimento(request.getDataNascimento()); // Assumindo Calendar
+        fisica.setDataNascimento(request.getDataNascimento());
+
+        if(fisica.getCpf().isBlank() || fisica.getTelefone().isBlank() || fisica.getDataNascimento() == null){
+            throw new RuntimeException("Informe todos os dados necessários: CPF,NOME,TELEFONE E DATA NASCIMENTO");
+        }
 
         return pessoaFisicaRepository.save(fisica);
+    }
+
+    public boolean verificarCpf(String cpf) {
+        if(pessoaFisicaRepository.findByCpf(cpf).isPresent()){
+            return false;
+        }else{
+            return true;
+        }
     }
 }

@@ -39,14 +39,20 @@ public class RegistroService {
     }
 
     private void salvarUsuarioFisico(RegistroRequest request) {
-        // 1. Cria PessoaFisica
-        PessoaFisica fisica = fisicaService.criarPessoaFisica(request);
 
-        // 2. Cria Cliente
-        clienteService.criarCliente(request, fisica);
+        if(fisicaService.verificarCpf(request.getCpf())){
+            // 1. Cria PessoaFisica
+            PessoaFisica fisica = fisicaService.criarPessoaFisica(request);
 
-        // 3. Cria Usuário de Login
-        usuarioService.criarUsuario(request.getEmail(), request.getSenha(), 'f', fisica.getCpf());
+            // 2. Cria Cliente
+            clienteService.criarCliente(request, fisica);
+
+            // 3. Cria Usuário de Login
+            usuarioService.criarUsuario(request.getEmail(), request.getSenha(), 'f', fisica.getCpf());
+        }else{
+            throw new RuntimeException("CPF JÁ CADASTRADO!");
+        }
+
     }
 
     private void salvarUsuarioJuridico(RegistroRequest request) {
