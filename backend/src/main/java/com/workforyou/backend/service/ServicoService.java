@@ -19,13 +19,13 @@ public class ServicoService {
     @Autowired
     private PrestadorRepository prestadorRepository;
 
-    public void salvarServico(String nomeServico, String tipoServico, String descricao, String cnpj){
+    public Servico salvarServico(String nomeServico, String tipoServico, String descricaoServico, String cnpj){
         Servico servico = new Servico();
         servico.setNomeServico(nomeServico);
         servico.setTipoServico(tipoServico);
-        servico.setDescricao(descricao);
+        servico.setDescricaoServico(descricaoServico);
 
-        Optional<Prestador> prestadorOptional = prestadorRepository.findByPessoaJuridicaCnpj(cnpj);
+        Optional<Prestador> prestadorOptional = prestadorRepository.findByCnpj(cnpj);
 
         if(prestadorOptional.isPresent()){
             servico.setPrestador(prestadorOptional.get());
@@ -33,6 +33,6 @@ public class ServicoService {
             throw new RuntimeException("Prestador não encontrado para o CNPJ: " + cnpj);
         }
 
-        servicoRepository.save(servico);
+        return servicoRepository.save(servico);
     }
 }

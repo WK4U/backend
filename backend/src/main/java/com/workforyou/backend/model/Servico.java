@@ -22,9 +22,9 @@ public class Servico {
     @Getter @Setter
     private String tipoServico;
 
-    @Column
+    @Column(name = "descricao_servico")
     @Getter @Setter
-    private String descricao;
+    private String descricaoServico;
 
     @ManyToOne
     @JoinColumn(name = "id_prestador")

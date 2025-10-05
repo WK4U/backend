@@ -22,27 +22,43 @@ public class PostagemService {
     @Autowired
     private PrestadorRepository prestadorRepository;
 
-    public void salvarNovaPostagem(String foto,String cnpj,Long idServico){
-        Postagem postagem = new Postagem();
-        postagem.setUrlFoto(foto);
+    public Postagem salvarNovaPostagem(String foto,String descricaoPostagem,String cnpj,Long idServico){
+        if(postagemJaCriada(idServico)){
 
-        Optional<Prestador> prestadorOptional = prestadorRepository.findByPessoaJuridicaCnpj(cnpj);
+            throw new RuntimeException("Postagem já criada com esse serviço!");
 
-        if (prestadorOptional.isPresent()) {
-            postagem.setPrestador(prestadorOptional.get());
-        } else {
-            throw new RuntimeException("Prestador não encontrado para o CNPJ: " + cnpj);
+        }else {
+
+            Postagem postagem = new Postagem();
+            postagem.setUrlFoto(foto);
+            postagem.setDescricaoPostagem(descricaoPostagem);
+
+            Optional<Prestador> prestadorOptional = prestadorRepository.findByCnpj(cnpj);
+
+            if (prestadorOptional.isPresent()) {
+                postagem.setPrestador(prestadorOptional.get());
+            } else {
+                throw new RuntimeException("Prestador não encontrado para o CNPJ: " + cnpj);
+            }
+
+            Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
+
+            if (servicoOptional.isPresent()) {
+                postagem.setServico(servicoOptional.get());
+            } else {
+                throw new RuntimeException("Serviço não encontrado com o ID: " + idServico);
+            }
+
+            return postagemRepository.save(postagem);
         }
+    }
 
-        Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
-
-        if (servicoOptional.isPresent()) {
-            postagem.setServico(servicoOptional.get());
-        } else {
-            throw new RuntimeException("Serviço não encontrado com o ID: " + idServico);
+    public boolean postagemJaCriada(Long idServico){
+        if(postagemRepository.findByServicoId(idServico).isPresent()){
+            return true;
+        }else{
+            return false;
         }
-
-        postagemRepository.save(postagem);
     }
 }
 

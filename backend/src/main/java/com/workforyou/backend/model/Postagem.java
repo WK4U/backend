@@ -17,9 +17,9 @@ public class Postagem {
     @Getter @Setter
     private String urlFoto;
 
-    @Column
+    @Column(name = "descricao")
     @Getter @Setter
-    private String descricao;
+    private String descricaoPostagem;
 
     // Relacionamentos para a entidade a qual a foto pertence
     // Um dos campos abaixo será preenchido
