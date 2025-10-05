@@ -1,0 +1,22 @@
+#Arquivos e Pastas de Build (Gerados pelo Gradle)
+/build/
+/out/
+*.jar
+*.war
+*.zip
+*.tar
+
+#Arquivos de IDE (IntelliJ)
+.idea/
+*.iml
+*.iws
+*.iwp
+
+#Arquivos de Sistema
+.DS_Store
+Thumbs.db
+
+#ARQUIVOS DE CREDENCIAIS (CRUCIAL PARA SEGURANÇA)
+.env
+
+
