@@ -35,8 +35,6 @@ public class PostagemController {
                     request.getFoto()
             );
         }catch (Exception e){
-            // É uma boa prática logar o erro completo aqui
-            e.printStackTrace();
             return ResponseEntity.status(400).body(e.getMessage());
         }
 

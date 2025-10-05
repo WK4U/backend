@@ -1,6 +1,5 @@
 package com.workforyou.backend.service;
 
-import com.workforyou.backend.model.Postagem;
 import com.workforyou.backend.model.Servico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
