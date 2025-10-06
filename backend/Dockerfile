@@ -15,6 +15,7 @@ RUN ./gradlew build --no-daemon -x test
 # -------------------------
 # Etapa 2: Criar a imagem final com apenas o JAR
 FROM openjdk:17-jdk-slim
+
 WORKDIR /app
 
 # Copia o JAR gerado da etapa de build
