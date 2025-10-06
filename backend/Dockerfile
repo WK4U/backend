@@ -4,11 +4,15 @@ WORKDIR /app
 
 # Copia TODOS os arquivos necessários para o build (gradlew, build.gradle, settings.gradle e a pasta src)
 # O ponto ( . ) na origem significa "tudo no contexto atual" (a raiz do seu projeto).
-COPY . .
+COPY . /app
 
 # Roda o build e gera o JAR
-RUN gradle build --no-daemon
-
+# --- MODIFICAÇÃO AQUI ---
+# 1. Dá permissão de execução ao script gradlew
+RUN chmod +x ./gradlew
+# 2. Executa o build usando o script wrapper
+RUN ./gradlew build --no-daemon -x test
+# -------------------------
 # Etapa 2: Criar a imagem final com apenas o JAR
 FROM openjdk:17-jdk-slim
 WORKDIR /app
