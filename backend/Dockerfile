@@ -2,16 +2,26 @@
 FROM gradle:8.14.3-jdk17 AS builder
 WORKDIR /app
 
-# Copia TODOS os arquivos necessários para o build (gradlew, build.gradle, settings.gradle e a pasta src)
-# O ponto ( . ) na origem significa "tudo no contexto atual" (a raiz do seu projeto).
-COPY . /app
+# 1. Copia arquivos de configuração e o wrapper (prioriza o cache)
+COPY build.gradle settings.gradle ./
+COPY gradlew ./
+COPY gradle/ ./gradle/
 
-# Roda o build e gera o JAR
-# --- MODIFICAÇÃO AQUI ---
-# 1. Dá permissão de execução ao script gradlew
+# 2. Dá permissão de execução (se for o caso)
 RUN chmod +x ./gradlew
-# 2. Executa o build usando o script wrapper
+
+# 3. Baixa as dependências. Se build.gradle não mudar, esta etapa usará o cache.
+# Isso garante que o Docker saiba que ele deve invalidar o cache se o build.gradle mudar.
+RUN ./gradlew dependencies --no-daemon
+
+# 4. Copia o código-fonte (que muda com frequência)
+COPY src/ ./src/
+
+# 5. Roda o build (que será rápido se as dependências já tiverem sido baixadas)
 RUN ./gradlew build --no-daemon -x test
+
+# O resto do Dockerfile (Estágio 2) permanece o mesmo.
+# ...
 # -------------------------
 # Etapa 2: Criar a imagem final com apenas o JAR
 FROM openjdk:17-jdk-slim
