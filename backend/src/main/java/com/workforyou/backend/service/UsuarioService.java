@@ -43,8 +43,6 @@ public class UsuarioService implements UserDetailsService {
         );
     }
 
-    // Seu código original a partir daqui...
-
     public Usuario criarUsuario(String email, String senha, char tipoUsuario, String documento) {
 
         Usuario user = new Usuario();
@@ -130,3 +128,4 @@ public class UsuarioService implements UserDetailsService {
         }
     }
 }
+
