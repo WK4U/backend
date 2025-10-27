@@ -86,5 +86,13 @@ public class PostagemService {
     public List<Postagem> getPostagem(){
         return postagemRepository.findAll();
     }
+
+    public List<Postagem> getPostagemPorTipo(String tipoServico){
+        if(postagemRepository.findByServicoTipoServico(tipoServico).isEmpty()){
+            throw new RuntimeException("Não há postagens para esse tipo de serviço!");
+        }else{
+            return postagemRepository.findByServicoTipoServico(tipoServico).get();
+        }
+    }
 }
 

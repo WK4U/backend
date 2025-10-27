@@ -42,4 +42,8 @@ public class PostagemServicoService {
     public List<Postagem> getPostagens(){
         return postagemService.getPostagem();
     }
+
+    public List<Postagem> getPostagensTipoServico(String tipoServico){
+        return postagemService.getPostagemPorTipo(tipoServico);
+    }
 }

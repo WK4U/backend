@@ -9,6 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface PostagemRepository extends JpaRepository<Postagem,Long> {
+
     Optional<Postagem> findByServicoId(Long idServico);
+
     Optional<List<Postagem>> findByPrestadorPessoaJuridicaCnpj(String cnpj);
+
+    Optional<List<Postagem>> findByServicoTipoServico(String tipoServico);
 }
