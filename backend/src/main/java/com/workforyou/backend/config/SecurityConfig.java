@@ -2,6 +2,7 @@ package com.workforyou.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/esqueceu-senha").permitAll()
                         .requestMatchers("/auth/validar-pin").permitAll()
                         .requestMatchers("/auth/redefinir-senha").permitAll()
-                        .requestMatchers("/postagem/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/postagem/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
