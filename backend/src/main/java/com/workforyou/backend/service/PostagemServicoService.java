@@ -1,5 +1,6 @@
 package com.workforyou.backend.service;
 
+import com.workforyou.backend.dto.PostagemRequest;
 import com.workforyou.backend.model.Postagem;
 import com.workforyou.backend.model.Servico;
 import com.workforyou.backend.model.Usuario;
@@ -33,11 +34,32 @@ public class PostagemServicoService {
         );
     }
 
-    public void editarPostagemServico(Long idServico,String nomeServico,String tipoServico,String descricaoServico,String descricaoPostagem,String foto){
+    public void editarPostagemServico(String emailLogado, Long idPostagem, PostagemRequest request){
+        if(usuarioRepository.findByEmail(emailLogado).isEmpty()){
+            throw new RuntimeException("Usuário não encontrado com esse email!");
+        }
+        Usuario usuarioLogado = usuarioRepository.findByEmail(emailLogado).get();
 
-        Servico servico = servicoService.editarServico(idServico,nomeServico,tipoServico,descricaoServico);
+        Postagem postagem = postagemService.getPorId(idPostagem);
 
-        postagemService.editarPostagem(servico.getId(),foto,descricaoPostagem);
+        if (!postagem.getPrestador().getPessoaJuridica().getCnpj().equals(usuarioLogado.getDocumento())) { //
+            throw new RuntimeException("Acesso negado. Você não é o dono desta postagem.");
+        }
+
+        Servico servicoParaEditar = postagem.getServico();
+
+        servicoService.editarServico(
+                servicoParaEditar.getId(),
+                request.getNomeServico(),
+                request.getTipoServico(),
+                request.getDescricaoServico()
+        );
+
+        postagemService.editarPostagem(
+                servicoParaEditar.getId(),
+                request.getFoto(),
+                request.getDescricaoPostagem()
+        );
     }
 
     public List<Postagem> getPostagensPorCnpj(String cnpj){

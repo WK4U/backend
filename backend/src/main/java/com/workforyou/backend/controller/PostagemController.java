@@ -89,19 +89,22 @@ public class PostagemController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "/edit/{idServico}",consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> editarPostagemServico(@PathVariable("idServico") Long idServico, @RequestBody PostagemRequest request){
-        try{
-            postagemServicoService.editarPostagemServico(idServico,
-                    request.getNomeServico(),
-                    request.getTipoServico(),
-                    request.getDescricaoServico(),
-                    request.getDescricaoPostagem(),
-                    request.getFoto()
-            );
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Erro de edição:" + e.getMessage());
+    @PutMapping(path = "/edit/{idPostagem}",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> editarPostagemServico(Principal principal, @PathVariable("idPostagem") Long idPostagem, @RequestBody PostagemRequest request){
+
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Usuário não autenticado.");
         }
-        return ResponseEntity.status(200).body("Serviço e postagem editados!");
+
+        try {
+            String emailLogado = principal.getName();
+
+            postagemServicoService.editarPostagemServico(emailLogado, idPostagem, request);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body("Erro ao editar: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok().body("Postagem e Serviço atualizados com sucesso!");
     }
 }
