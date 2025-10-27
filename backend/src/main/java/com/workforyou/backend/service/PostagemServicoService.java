@@ -2,6 +2,8 @@ package com.workforyou.backend.service;
 
 import com.workforyou.backend.model.Postagem;
 import com.workforyou.backend.model.Servico;
+import com.workforyou.backend.model.Usuario;
+import com.workforyou.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class PostagemServicoService {
 
     @Autowired
     private PostagemService postagemService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public void salvarPostagemServico(String nomeServico, String tipoServico, String descricaoS, String descricaoP, String cnpj, String foto){
 
@@ -46,7 +51,18 @@ public class PostagemServicoService {
     public List<Postagem> getPostagensTipoServico(String tipoServico){
         return postagemService.getPostagemPorTipo(tipoServico);
     }
-    public void excluirPostagemServico(Long idServico, Long idPostagem){
+    public void excluirPostagemServico(String emailLogado,Long idServico, Long idPostagem){
+        if(usuarioRepository.findByEmail(emailLogado).isEmpty()){
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+        Usuario usuarioLogado = usuarioRepository.findByEmail(emailLogado).get();
+
+        Postagem postagem = postagemService.getPorId(idPostagem);
+
+        if(!postagem.getPrestador().getPessoaJuridica().getCnpj().equals(usuarioLogado.getDocumento())){
+            throw new RuntimeException("Acesso negado. Você não é o dono da postagem!");
+        }
+
         postagemService.excluirPost(idPostagem);
 
         servicoService.excluirServ(idServico);

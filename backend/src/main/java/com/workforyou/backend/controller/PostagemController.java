@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid; // IMPORTANTE: Importar a anotação @Valid
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -70,9 +71,17 @@ public class PostagemController {
     }
 
     @DeleteMapping(path = "/delete")
-    public ResponseEntity<?> deletarPostagemServico(@RequestParam("idServico") Long idServico, @RequestParam("idPostagem") Long idPostagem){
+    public ResponseEntity<?> deletarPostagemServico(@RequestParam("idServico") Long idServico, Principal principal, @RequestParam("idPostagem") Long idPostagem){
+
+        if(principal == null){
+            return ResponseEntity.status(401).body("Usuário não encontrado!");
+        }
+
         try{
-            postagemServicoService.excluirPostagemServico(idServico,idPostagem);
+
+            String emailLogado = principal.getName();
+
+            postagemServicoService.excluirPostagemServico(emailLogado,idServico,idPostagem);
 
         }catch (Exception e){
             return ResponseEntity.status(404).body("Erro de deleção: " + e.getMessage());

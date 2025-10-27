@@ -55,11 +55,7 @@ public class PostagemService {
     }
 
     public boolean postagemJaCriada(Long idServico){
-        if(postagemRepository.findByServicoId(idServico).isPresent()){
-            return true;
-        }else{
-            return false;
-        }
+        return postagemRepository.findByServicoId(idServico).isPresent();
     }
 
     public Postagem editarPostagem(Long idServico,String foto,String descricaoPostagem){
@@ -101,8 +97,16 @@ public class PostagemService {
         }
     }
 
-    public void excluirPost(Long idServico){
-        postagemRepository.deleteById(idServico);
+    public void excluirPost(Long idPostagem){
+        postagemRepository.deleteById(idPostagem);
+    }
+
+    public Postagem getPorId(Long id){
+        if(postagemRepository.findById(id).isEmpty()){
+            throw new RuntimeException("Postagem não encontrada!");
+        }else{
+            return postagemRepository.findById(id).get();
+        }
     }
 }
 
