@@ -54,4 +54,11 @@ public class PostagemController {
         }
         return ResponseEntity.status(200).body(postagens);
     }
+
+    @GetMapping(path = "/get", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> get(){
+        List<Postagem> postagens = postagemServicoService.getPostagens();
+
+        return ResponseEntity.status(200).body(postagens);
+    }
 }

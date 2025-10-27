@@ -75,12 +75,16 @@ public class PostagemService {
         }
     }
 
-    public List<Postagem> getPostagem(String cnpj){
+    public List<Postagem> getPostagemCnpj(String cnpj){
         if(postagemRepository.findByPrestadorPessoaJuridicaCnpj(cnpj).isEmpty()){
             throw new RuntimeException("Não há postagens!");
         }else{
             return postagemRepository.findByPrestadorPessoaJuridicaCnpj(cnpj).get();
         }
+    }
+
+    public List<Postagem> getPostagem(){
+        return postagemRepository.findAll();
     }
 }
 
