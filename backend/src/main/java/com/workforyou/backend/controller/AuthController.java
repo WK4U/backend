@@ -4,13 +4,16 @@ import com.workforyou.backend.dto.LoginRequest;
 import com.workforyou.backend.dto.LoginResponse;
 import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.config.JwtUtil;
+import com.workforyou.backend.model.Usuario;
 import com.workforyou.backend.repository.UsuarioRepository;
 import com.workforyou.backend.service.RegistroService;
 import com.workforyou.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -35,15 +38,18 @@ public class AuthController {
 
     @PostMapping(path = "/login", consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        var usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        if(usuarioRepository.findByEmail(request.getEmail()).isEmpty()){
+            return ResponseEntity.status(404).body("Não encontrado!");
+        }else {
+            Usuario usuario = usuarioRepository.findByEmail(request.getEmail()).get();
 
-        if (!usuario.getSenha().equals(request.getSenha())) {
-            return ResponseEntity.status(401).body("Senha inválida");
+            if (!usuario.getSenha().equals(request.getSenha())) {
+                return ResponseEntity.status(401).body("Senha inválida");
+            }
+
+            String token = JwtUtil.gerarToken(usuario.getEmail());
+            return ResponseEntity.ok(new LoginResponse(token));
         }
-
-        String token = JwtUtil.gerarToken(usuario.getEmail());
-        return ResponseEntity.ok(new LoginResponse(token));
     }
 
     @PostMapping("/esqueceu-senha")
