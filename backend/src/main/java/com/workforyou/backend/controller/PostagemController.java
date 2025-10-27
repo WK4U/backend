@@ -2,13 +2,15 @@ package com.workforyou.backend.controller;
 
 import com.workforyou.backend.dto.PostagemRequest;
 import com.workforyou.backend.model.Postagem;
+import com.workforyou.backend.model.Usuario;
 import com.workforyou.backend.service.PostagemServicoService;
+import com.workforyou.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid; // IMPORTANTE: Importar a anotação @Valid
+import jakarta.validation.Valid;
 
 import java.security.Principal;
 import java.util.List;
@@ -21,18 +23,29 @@ public class PostagemController {
     @Autowired
     private PostagemServicoService postagemServicoService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
     // Adicionamos @Valid aqui para que as anotações do DTO sejam verificadas.
-    public ResponseEntity<?> register(@Valid @RequestBody PostagemRequest request){
+    public ResponseEntity<?> register(@Valid @RequestBody PostagemRequest request, Principal principal){
+
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Usuário não autenticado.");
+        }
+
         try {
-            // Se a validação falhar, o método register não será executado.
-            // Se passar, a lógica de negócio é chamada:
-            postagemServicoService.salvarPostagemServico(
+
+            String emailLogado = principal.getName();
+            Usuario usuarioLogado = usuarioService.getUsuarioPorEmail(emailLogado);
+            String cnpjVerificado = usuarioLogado.getDocumento();
+
+            postagemServicoService.salvarPostagemServico( //
                     request.getNomeServico(),
                     request.getTipoServico(),
                     request.getDescricaoServico(),
                     request.getDescricaoPostagem(),
-                    request.getCnpj(),
+                    cnpjVerificado,
                     request.getFoto()
             );
         }catch (Exception e){
