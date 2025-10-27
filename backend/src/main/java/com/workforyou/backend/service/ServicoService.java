@@ -44,9 +44,17 @@ public class ServicoService {
 
             Servico servico = servicoRepository.findById(idServico).get();
 
-            servico.setDescricaoServico(descricaoServico);
-            servico.setTipoServico(tipoServico);
-            servico.setNomeServico(nomeServico);
+            if(descricaoServico != null){
+                servico.setDescricaoServico(descricaoServico);
+            }
+
+            if(tipoServico != null){
+                servico.setTipoServico(tipoServico);
+            }
+
+            if(nomeServico != null){
+                servico.setNomeServico(nomeServico);
+            }
 
             return servicoRepository.save(servico);
         }

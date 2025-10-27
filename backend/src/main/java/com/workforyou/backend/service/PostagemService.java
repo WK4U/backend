@@ -66,10 +66,16 @@ public class PostagemService {
         if(postagemRepository.findByServicoId(idServico).isEmpty()){
             throw new RuntimeException("Postagem não encontrada!");
         }else{
+
             Postagem postagem = postagemRepository.findByServicoId(idServico).get();
 
-            postagem.setDescricaoPostagem(descricaoPostagem);
-            postagem.setUrlFoto(foto);
+            if(foto != null){
+                postagem.setUrlFoto(foto);
+            }
+
+            if(descricaoPostagem != null){
+                postagem.setDescricaoPostagem(descricaoPostagem);
+            }
 
             return postagemRepository.save(postagem);
         }
