@@ -35,4 +35,20 @@ public class ServicoService {
 
         return servicoRepository.save(servico);
     }
+
+    public Servico editarServico(Long idServico,String nomeServico, String tipoServico, String descricaoServico){
+
+        if(servicoRepository.findById(idServico).isEmpty()){
+            throw new RuntimeException("Serviço não encontrado!");
+        }else{
+
+            Servico servico = servicoRepository.findById(idServico).get();
+
+            servico.setDescricaoServico(descricaoServico);
+            servico.setTipoServico(tipoServico);
+            servico.setNomeServico(nomeServico);
+
+            return servicoRepository.save(servico);
+        }
+    }
 }

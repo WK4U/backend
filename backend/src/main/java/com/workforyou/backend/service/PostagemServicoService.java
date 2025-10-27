@@ -1,8 +1,11 @@
 package com.workforyou.backend.service;
 
+import com.workforyou.backend.model.Postagem;
 import com.workforyou.backend.model.Servico;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PostagemServicoService {
@@ -13,18 +16,28 @@ public class PostagemServicoService {
     @Autowired
     private PostagemService postagemService;
 
-    public void criarPostagemServico(String nomeServico, String tipoServico, String descricaoS,String descricaoP, String cnpj, String foto){
+    public void salvarPostagemServico(String nomeServico, String tipoServico, String descricaoS, String descricaoP, String cnpj, String foto){
 
-        // 1. Salva o serviço
         Servico servico = servicoService.salvarServico(nomeServico,tipoServico,descricaoS,cnpj);
 
-        // 2. Salva a postagem com a ordem CORRETA de argumentos:
-        // Ordem esperada: (foto, descricaoPostagem, cnpj, idServico)
         postagemService.salvarNovaPostagem(
                 foto,
-                descricaoP, // Argumento 2: Descrição da Postagem (descricaoPostagem)
-                cnpj,       // Argumento 3: CNPJ
+                descricaoP,
+                cnpj,
                 servico.getId()
         );
+    }
+
+    public void editarPostagemServico(Long idServico,String nomeServico,String tipoServico,String descricaoServico,String descricaoPostagem,String foto){
+
+
+
+        Servico servico = servicoService.editarServico(idServico,nomeServico,tipoServico,descricaoServico);
+
+        postagemService.editarPostagem(servico.getId(),foto,descricaoPostagem);
+    }
+
+    public List<Postagem> getPostagensPorCnpj(String cnpj){
+        return postagemService.getPostagem(cnpj);
     }
 }

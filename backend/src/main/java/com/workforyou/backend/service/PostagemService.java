@@ -10,6 +10,7 @@ import com.workforyou.backend.repository.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,6 +59,27 @@ public class PostagemService {
             return true;
         }else{
             return false;
+        }
+    }
+
+    public Postagem editarPostagem(Long idServico,String foto,String descricaoPostagem){
+        if(postagemRepository.findByServicoId(idServico).isEmpty()){
+            throw new RuntimeException("Postagem não encontrada!");
+        }else{
+            Postagem postagem = postagemRepository.findByServicoId(idServico).get();
+
+            postagem.setDescricaoPostagem(descricaoPostagem);
+            postagem.setUrlFoto(foto);
+
+            return postagemRepository.save(postagem);
+        }
+    }
+
+    public List<Postagem> getPostagem(String cnpj){
+        if(postagemRepository.findByPrestadorPessoaJuridicaCnpj(cnpj).isEmpty()){
+            throw new RuntimeException("Não há postagens!");
+        }else{
+            return postagemRepository.findByPrestadorPessoaJuridicaCnpj(cnpj).get();
         }
     }
 }
