@@ -41,7 +41,7 @@ public class PostagemController {
         return ResponseEntity.status(201).body("Postagem criada!");
     }
 
-    @GetMapping(path = "/get/{cnpj}",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/get/{cnpj}",produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getPorCnpj(@PathVariable String cnpj){
         List<Postagem> postagens;
 
@@ -55,14 +55,14 @@ public class PostagemController {
         return ResponseEntity.status(200).body(postagens);
     }
 
-    @GetMapping(path = "/get", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/get", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> get(){
         List<Postagem> postagens = postagemServicoService.getPostagens();
 
         return ResponseEntity.status(200).body(postagens);
     }
 
-    @GetMapping(path = "/get/{tipoServico}",consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/get/{tipoServico}",produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getPorTipoServico(@PathVariable String tipoServico){
         List<Postagem> postagens = postagemServicoService.getPostagensTipoServico(tipoServico);
 
