@@ -20,7 +20,7 @@ public class FisicaService {
         fisica.setTelefone(request.getTelefone());
         fisica.setDataNascimento(request.getDataNascimento());
 
-        if(fisica.getCpf().isBlank() || fisica.getTelefone().isBlank() || fisica.getDataNascimento() == null){
+        if (fisica.getCpf().isBlank() || fisica.getTelefone().isBlank() || fisica.getDataNascimento() == null) {
             throw new RuntimeException("Informe todos os dados necessários: CPF,NOME,TELEFONE E DATA NASCIMENTO");
         }
 
@@ -28,10 +28,23 @@ public class FisicaService {
     }
 
     public boolean verificarCpf(String cpf) {
-        if(pessoaFisicaRepository.findByCpf(cpf).isPresent()){
+        if (pessoaFisicaRepository.findByCpf(cpf).isPresent()) {
             return false;
-        }else{
+        } else {
             return true;
         }
+    }
+
+    public PessoaFisica editarPessoaFisica(PessoaFisica pessoaFisica, RegistroRequest request) {
+        if (request.getNome() != null && !request.getNome().isBlank()) {
+            pessoaFisica.setNome(request.getNome());
+        }
+        if (request.getTelefone() != null && !request.getTelefone().isBlank()) {
+            pessoaFisica.setTelefone(request.getTelefone());
+        }
+        if (request.getDataNascimento() != null) {
+            pessoaFisica.setDataNascimento(request.getDataNascimento());
+        }
+        return pessoaFisicaRepository.save(pessoaFisica);
     }
 }

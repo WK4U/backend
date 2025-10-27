@@ -14,4 +14,5 @@ public interface PrestadorRepository extends JpaRepository<Prestador, Long> {
     @Query("SELECT p FROM prestadores p WHERE p.pessoaJuridica.cnpj = :cnpj")
     Optional<Prestador> findByCnpj(@Param("cnpj") String cnpj);
 
+    Optional<Prestador> findByEmail(String email);
 }

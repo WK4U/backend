@@ -30,4 +30,22 @@ public class PrestadorService {
 
         return prestadorRepository.save(prestador);
     }
+
+    public Prestador editarPrestador(Prestador prestador, RegistroRequest request) {
+        if (request.getUriFoto() != null) {
+            prestador.setUrlFoto(request.getUriFoto());
+        }
+        if (request.getEspecialidade() != null && !request.getEspecialidade().isBlank()) {
+            prestador.setEspecialidade(request.getEspecialidade());
+        }
+        return prestadorRepository.save(prestador);
+    }
+
+    public Prestador getPorEmail(String email){
+        if(prestadorRepository.findByEmail(email).isEmpty()){
+            throw new RuntimeException("Prestador não encontrado com esse email!");
+        }else{
+            return prestadorRepository.findByEmail(email).get();
+        }
+    }
 }

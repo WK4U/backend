@@ -1,8 +1,7 @@
 package com.workforyou.backend.service;
 
 import com.workforyou.backend.dto.RegistroRequest;
-import com.workforyou.backend.model.PessoaFisica;
-import com.workforyou.backend.model.PessoaJuridica;
+import com.workforyou.backend.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +68,24 @@ public class RegistroService {
         }else{
             throw new RuntimeException("CNPJ JÁ CADASTRADO!");
         }
+    }
 
+    public void editarUsuario(String emailUsuarioLogado, RegistroRequest request){
+        Usuario usuario = usuarioService.getUsuarioPorEmail(emailUsuarioLogado);
 
+        if(usuario.getTipoUsuario() == 'f'){
+            Cliente cliente = clienteService.getClientePorEmail(emailUsuarioLogado);
+
+            fisicaService.editarPessoaFisica(cliente.getPessoaFisica(),request);
+            clienteService.editarCliente(cliente,request);
+        } else if (usuario.getTipoUsuario() == 'j') {
+            Prestador prestador = prestadorService.getPorEmail(emailUsuarioLogado);
+
+            juridicaService.editarPessoaJuridica(prestador.getPessoaJuridica(),request);
+            prestadorService.editarPrestador(prestador,request);
+
+        }else{
+            throw new RuntimeException("Não foi possível editar!");
+        }
     }
 }

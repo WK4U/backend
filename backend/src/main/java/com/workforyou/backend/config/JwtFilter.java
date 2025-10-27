@@ -71,11 +71,4 @@ public class JwtFilter extends OncePerRequestFilter {
         // Continua a cadeia de filtros.
         filterChain.doFilter(request, response);
     }
-
-    // Método para ignorar o filtro em rotas públicas (como a sua /auth/**)
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // Isso é mais robusto que verificar getServletPath() diretamente, como você tinha
-        return request.getServletPath().startsWith("/auth/");
-    }
 }

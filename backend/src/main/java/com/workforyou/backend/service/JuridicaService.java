@@ -29,4 +29,15 @@ public class JuridicaService {
             return true;
         }
     }
+
+    public PessoaJuridica editarPessoaJuridica(PessoaJuridica pessoaJuridica, RegistroRequest request) {
+        if (request.getNome() != null && !request.getNome().isBlank()) {
+            pessoaJuridica.setNome(request.getNome());
+        }
+        if (request.getTelefone() != null && !request.getTelefone().isBlank()) {
+            pessoaJuridica.setTelefone(request.getTelefone());
+        }
+        return pessoaJuridicaRepository.save(pessoaJuridica);
+    }
 }
+

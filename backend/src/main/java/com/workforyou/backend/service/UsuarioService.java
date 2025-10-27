@@ -127,5 +127,13 @@ public class UsuarioService implements UserDetailsService {
             return false;
         }
     }
+
+    public Usuario getUsuarioPorEmail(String email){
+        if(usuarioRepository.findByEmail(email).isEmpty()){
+            throw new RuntimeException("Usuário com esse email não encontrado!");
+        }else{
+            return usuarioRepository.findByEmail(email).get();
+        }
+    }
 }
 

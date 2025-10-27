@@ -21,4 +21,21 @@ public class ClienteService {
 
         return clienteRepository.save(cliente);
     }
+
+    public Cliente getClientePorEmail(String email){
+        if(clienteRepository.findByEmail(email).isEmpty()){
+            throw new RuntimeException("Cliente com esse email não encontrado!");
+        }else{
+            return clienteRepository.findByEmail(email).get();
+        }
+    }
+
+    public Cliente editarCliente(Cliente cliente, RegistroRequest request) {
+        if (request.getUriFoto() != null) {
+            cliente.setUrlFoto(request.getUriFoto());
+        }
+        // Não editamos o email aqui, pois é usado para login.
+        return clienteRepository.save(cliente);
+    }
+
 }

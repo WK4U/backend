@@ -24,7 +24,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/register").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/esqueceu-senha").permitAll()
+                        .requestMatchers("/auth/validar-pin").permitAll()
+                        .requestMatchers("/auth/redefinir-senha").permitAll()
                         .requestMatchers("/postagem/**").permitAll()
                         .anyRequest().authenticated()
                 )

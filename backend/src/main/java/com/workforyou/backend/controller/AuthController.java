@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -100,6 +101,23 @@ public class AuthController {
         }
 
         return ResponseEntity.ok("Senha redefinida com sucesso");
+    }
+
+    @PatchMapping("/edit")
+    public ResponseEntity<?> editarConta(@RequestBody RegistroRequest request,Principal principal){
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Usuário não autenticado.");
+        }
+        try {
+            String emailLogado = principal.getName();
+
+            registroService.editarUsuario(emailLogado, request);
+
+            return ResponseEntity.ok("Perfil atualizado com sucesso!");
+
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(404).body(ex.getMessage());
+        }
     }
 
 
