@@ -30,14 +30,16 @@ public class PostagemServicoService {
 
     public void editarPostagemServico(Long idServico,String nomeServico,String tipoServico,String descricaoServico,String descricaoPostagem,String foto){
 
-
-
         Servico servico = servicoService.editarServico(idServico,nomeServico,tipoServico,descricaoServico);
 
         postagemService.editarPostagem(servico.getId(),foto,descricaoPostagem);
     }
 
     public List<Postagem> getPostagensPorCnpj(String cnpj){
-        return postagemService.getPostagem(cnpj);
+        return postagemService.getPostagemCnpj(cnpj);
+    }
+
+    public List<Postagem> getPostagens(){
+        return postagemService.getPostagem();
     }
 }
