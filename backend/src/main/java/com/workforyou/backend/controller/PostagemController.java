@@ -68,4 +68,15 @@ public class PostagemController {
 
         return ResponseEntity.status(200).body(postagens);
     }
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<?> deletarPostagemServico(@RequestParam("idServico") Long idServico, @RequestParam("idPostagem") Long idPostagem){
+        try{
+            postagemServicoService.excluirPostagemServico(idServico,idPostagem);
+
+        }catch (Exception e){
+            return ResponseEntity.status(404).body("Erro de deleção: " + e.getMessage());
+        }
+        return ResponseEntity.noContent().build();
+    }
 }

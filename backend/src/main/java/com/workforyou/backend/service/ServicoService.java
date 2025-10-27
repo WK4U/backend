@@ -51,4 +51,8 @@ public class ServicoService {
             return servicoRepository.save(servico);
         }
     }
+
+    public void excluirServ(Long idServico){
+        servicoRepository.deleteById(idServico);
+    }
 }

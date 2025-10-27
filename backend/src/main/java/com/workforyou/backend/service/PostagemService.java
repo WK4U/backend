@@ -94,5 +94,9 @@ public class PostagemService {
             return postagemRepository.findByServicoTipoServico(tipoServico).get();
         }
     }
+
+    public void excluirPost(Long idServico){
+        postagemRepository.deleteById(idServico);
+    }
 }
 

@@ -46,4 +46,9 @@ public class PostagemServicoService {
     public List<Postagem> getPostagensTipoServico(String tipoServico){
         return postagemService.getPostagemPorTipo(tipoServico);
     }
+    public void excluirPostagemServico(Long idServico, Long idPostagem){
+        postagemService.excluirPost(idPostagem);
+
+        servicoService.excluirServ(idServico);
+    }
 }
