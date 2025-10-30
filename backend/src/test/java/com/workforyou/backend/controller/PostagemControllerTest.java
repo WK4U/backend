@@ -3,16 +3,16 @@ package com.workforyou.backend.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workforyou.backend.dto.PostagemRequest;
-import com.workforyou.backend.model.PessoaJuridica;
-import com.workforyou.backend.model.Postagem;
-import com.workforyou.backend.model.Prestador;
-import com.workforyou.backend.model.Servico;
+import com.workforyou.backend.model.*;
+import com.workforyou.backend.repository.UsuarioRepository;
 import com.workforyou.backend.service.PostagemService;
 import com.workforyou.backend.service.PostagemServicoService;
 import com.workforyou.backend.service.RegistroService;
+import com.workforyou.backend.service.ServicoService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,8 +27,10 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -50,8 +52,17 @@ public class PostagemControllerTest {
     @Autowired
     private PostagemService postagemService;
 
+    @MockBean
+    private PostagemService postagemServiceMock;
+
     @Autowired
     private PostagemController postagemController;
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private ServicoService servicoService;
 
     @MockBean
     private PostagemServicoService postagemServicoService;
@@ -236,53 +247,57 @@ public class PostagemControllerTest {
     @Test
     public void testaEditarPostagem() throws Exception {
         Long idServico = 1L;
+
         PostagemRequest request = new PostagemRequest();
         request.setNomeServico("Serviço Atualizado");
-        request.setTipoServico("Limpeza");
-        request.setDescricaoServico("Serviço de limpeza residencial");
-        request.setDescricaoPostagem("Agora com desconto");
-        request.setFoto("foto_atualizada.jpg");
+        request.setTipoServico("Elétrica");
+        request.setDescricaoServico("Instalação de fiação revisada");
+        request.setDescricaoPostagem("Atualização na postagem do serviço");
+        request.setFoto("nova_foto.png");
 
 
-        mockMvc.perform(put("/postagem/edit/{idServico}", idServico)
+        doNothing().when(postagemServicoService)
+                .editarPostagemServico(anyString(), eq(idServico), any(PostagemRequest.class));
+
+
+        mockMvc.perform(put(API_PATH + "/edit/{idServico}", idServico)
+                        .principal(() -> "usuario@teste.com")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request)))
 
                 .andExpect(status().isOk())
-                .andExpect(content().string("Serviço e postagem editados!"));
+                .andExpect(content().string("Postagem e Serviço atualizados com sucesso!"));
 
-        verify(postagemServicoService, times(1)).editarPostagemServico(
-                eq(1L),
-                eq("Serviço Atualizado"),
-                eq("Limpeza"),
-                eq("Serviço de limpeza residencial"),
-                eq("Agora com desconto"),
-                eq("foto_atualizada.jpg")
-        );
+
+        verify(postagemServicoService, times(1))
+                .editarPostagemServico("usuario@teste.com", idServico, request);
     }
 
     @Test
     public void testaEditarPostagemNegativo() throws Exception {
         Long idServico = 1L;
+
         PostagemRequest request = new PostagemRequest();
-        request.setNomeServico("Serviço com erro");
-        request.setTipoServico("Pintura");
-        request.setDescricaoServico("Serviço de pintura");
-        request.setDescricaoPostagem("Erro simulado");
-        request.setFoto("erro.jpg");
+        request.setNomeServico("Serviço Inválido");
+        request.setTipoServico("Elétrica");
+        request.setDescricaoServico("Tentativa de edição indevida");
+        request.setDescricaoPostagem("Usuário não dono tentando editar");
+        request.setFoto("foto_invalida.png");
 
-        doThrow(new RuntimeException("Falha ao editar")).when(postagemServicoService)
-                .editarPostagemServico(anyLong(), anyString(), anyString(), anyString(), anyString(), anyString());
 
-        mockMvc.perform(put("/postagem/edit/{idServico}", idServico)
+        doThrow(new RuntimeException("Acesso negado. Você não é o dono desta postagem."))
+                .when(postagemServicoService)
+                .editarPostagemServico(eq("usuario@teste.com"), eq(idServico), any(PostagemRequest.class));
+
+        mockMvc.perform(put(API_PATH + "/edit/{idServico}", idServico)
+                        .principal(() -> "usuario@teste.com")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("Erro ao editar: Acesso negado. Você não é o dono desta postagem."));
 
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("Erro de edição:Falha ao editar")));
-
-        verify(postagemServicoService, times(1)).editarPostagemServico(
-                anyLong(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(postagemServicoService, times(1))
+                .editarPostagemServico(eq("usuario@teste.com"), eq(idServico), any(PostagemRequest.class));
     }
 
 }
