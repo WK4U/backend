@@ -1,6 +1,7 @@
 package com.workforyou.backend.service;
 
 
+import com.workforyou.backend.dto.PostagemRequest;
 import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.*;
 import com.workforyou.backend.repository.PostagemRepository;
@@ -94,51 +95,82 @@ public class PostagemServicoServiceTest {
 
     @Test
     public void testaEditarPostagemServico(){
-        Long idServico = 1L;
-        String nomeServico = "Serviço Elétrico";
-        String tipoServico = "Residencial";
-        String descricaoServico = "Troca de fiação antiga";
-        String descricaoPostagem = "Atualizamos o serviço com fotos novas!";
-        String foto = "foto_atualizada.jpg";
+        String emailLogado = "teste@exemplo.com";
+        Long idPostagem = 1L;
 
-        Servico servicoEditado = new Servico();
-        servicoEditado.setId(idServico);
+        Usuario usuarioLogado = new Usuario();
+        usuarioLogado.setEmail(emailLogado);
+        usuarioLogado.setDocumento("1234567890001");
 
-        when(servicoService.editarServico(idServico, nomeServico, tipoServico, descricaoServico))
-                .thenReturn(servicoEditado);
+        PessoaJuridica pessoaJuridica = new PessoaJuridica();
+        pessoaJuridica.setCnpj("1234567890001");
 
+        Prestador prestador = new Prestador();
+        prestador.setPessoaJuridica(pessoaJuridica);
 
-        postagemServicoService.editarPostagemServico(idServico, nomeServico, tipoServico, descricaoServico, descricaoPostagem, foto);
+        Servico servico = new Servico();
+        servico.setId(10L);
+        servico.setNomeServico("Serviço antigo");
 
+        Postagem postagem = new Postagem();
+        postagem.setId(idPostagem);
+        postagem.setPrestador(prestador);
+        postagem.setServico(servico);
 
-        verify(servicoService, times(1))
-                .editarServico(idServico, nomeServico, tipoServico, descricaoServico);
+        PostagemRequest request = new PostagemRequest();
+        request.setNomeServico("Serviço atualizado");
+        request.setTipoServico("Limpeza");
+        request.setDescricaoServico("Limpeza residencial completa");
 
-        verify(postagemService, times(1))
-                .editarPostagem(servicoEditado.getId(), foto, descricaoPostagem);
+        when(usuarioRepository.findByEmail(emailLogado)).thenReturn(Optional.of(usuarioLogado));
+        when(postagemService.getPorId(idPostagem)).thenReturn(postagem);
+
+        postagemServicoService.editarPostagemServico(emailLogado, idPostagem, request);
+
+        verify(servicoService, times(1)).editarServico(
+                servico.getId(),
+                "Serviço atualizado",
+                "Limpeza",
+                "Limpeza residencial completa");
     }
 
     @Test
     public void testaEditarPostagemServicoNegativo(){
-        Long idServico = 1L;
-        String nomeServico = "Serviço X";
-        String tipoServico = "Tipo Y";
-        String descricaoServico = "Descrição S";
-        String descricaoPostagem = "Descrição P";
-        String foto = "foto.png";
+        String emailLogado = "usuario@teste.com";
+        Long idPostagem = 2L;
 
-        when(servicoService.editarServico(idServico, nomeServico, tipoServico, descricaoServico))
-                .thenReturn(null);
+        Usuario usuarioLogado = new Usuario();
+        usuarioLogado.setEmail(emailLogado);
+        usuarioLogado.setDocumento("9999999990001");
+
+        PessoaJuridica pessoaJuridica = new PessoaJuridica();
+        pessoaJuridica.setCnpj("1234567890001");
+
+        Prestador prestador = new Prestador();
+        prestador.setPessoaJuridica(pessoaJuridica);
+
+        Servico servico = new Servico();
+        servico.setId(20L);
+        servico.setNomeServico("Serviço qualquer");
+
+        Postagem postagem = new Postagem();
+        postagem.setId(idPostagem);
+        postagem.setPrestador(prestador);
+        postagem.setServico(servico);
+
+        when(usuarioRepository.findByEmail(emailLogado)).thenReturn(Optional.of(usuarioLogado));
+        when(postagemService.getPorId(idPostagem)).thenReturn(postagem);
+
+        PostagemRequest request = new PostagemRequest();
+        request.setNomeServico("Tentativa de edição");
 
 
-        assertThrows(NullPointerException.class, () -> {
-            postagemServicoService.editarPostagemServico(idServico, nomeServico, tipoServico, descricaoServico, descricaoPostagem, foto);
-        });
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                postagemServicoService.editarPostagemServico(emailLogado, idPostagem, request)
+        );
 
-        verify(servicoService, times(1))
-                .editarServico(idServico, nomeServico, tipoServico, descricaoServico);
-
-        verify(postagemService, never()).editarPostagem(anyLong(), anyString(), anyString());
+        assertEquals("Acesso negado. Você não é o dono desta postagem.", ex.getMessage());
+        verifyNoInteractions(servicoService);
     }
 
     @Test
