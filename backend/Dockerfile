@@ -24,7 +24,7 @@ RUN ./gradlew build --no-daemon -x test
 # ...
 # -------------------------
 # Etapa 2: Criar a imagem final com apenas o JAR
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy
 
 WORKDIR /app
 
