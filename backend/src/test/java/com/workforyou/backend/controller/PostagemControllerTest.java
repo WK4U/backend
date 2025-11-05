@@ -193,7 +193,7 @@ public class PostagemControllerTest {
 
         when(postagemServicoService.getPostagens()).thenReturn(postagensMock);
 
-        mockMvc.perform(get(API_PATH + "/get")
+        mockMvc.perform(get(API_PATH + "/getAll")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -317,3 +317,4 @@ public class PostagemControllerTest {
     }
 
 }
+
