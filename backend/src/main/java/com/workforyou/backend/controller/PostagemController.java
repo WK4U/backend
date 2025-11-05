@@ -55,8 +55,8 @@ public class PostagemController {
         return ResponseEntity.status(201).body("Postagem criada!");
     }
 
-    @GetMapping(path = "/get",produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> getPorCnpj(@RequestParam("cnpj") String cnpj){
+    @GetMapping(path = "/get/{cnpj}",produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> getPorCnpj(@PathVariable("cnpj") String cnpj){
         List<Postagem> postagens;
 
         try{
