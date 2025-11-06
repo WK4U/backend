@@ -69,7 +69,7 @@ public class PostagemController {
         return ResponseEntity.status(200).body(postagens);
     }
 
-    @GetMapping(path = "/get", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/getAll", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> get(){
         List<Postagem> postagens = postagemServicoService.getPostagens();
 
