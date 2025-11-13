@@ -23,6 +23,8 @@ public class RegistroService {
     @Autowired
     private PrestadorService prestadorService;
 
+
+
     public void salvarNovoUsuario(RegistroRequest request) {
         if(usuarioService.verificarEmailExistente(request.getEmail())){
             throw new RuntimeException("Este e-mail já está em uso.");
