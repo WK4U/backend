@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.List;
 
@@ -26,33 +26,59 @@ public class PostagemController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
-    // Adicionamos @Valid aqui para que as anotações do DTO sejam verificadas.
-    public ResponseEntity<?> register(@Valid @RequestBody PostagemRequest request, Principal principal){
+    @PostMapping(path = "/register", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> register(
+            @Valid @RequestPart("dados") PostagemRequest request,
+            @RequestPart(value = "file") MultipartFile file,
+            Principal principal
+    ) {
 
         if (principal == null) {
             return ResponseEntity.status(401).body("Usuário não autenticado.");
         }
 
         try {
-
             String emailLogado = principal.getName();
             Usuario usuarioLogado = usuarioService.getUsuarioPorEmail(emailLogado);
             String cnpjVerificado = usuarioLogado.getDocumento();
 
-            postagemServicoService.salvarPostagemServico( //
+            postagemServicoService.salvarPostagemServico(
                     request.getNomeServico(),
                     request.getTipoServico(),
                     request.getDescricaoServico(),
                     request.getDescricaoPostagem(),
                     cnpjVerificado,
-                    request.getFoto()
+                    file
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
 
         return ResponseEntity.status(201).body("Postagem criada!");
+    }
+
+    @PutMapping(path = "/edit/{idPostagem}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> editarPostagemServico(
+            Principal principal,
+            @PathVariable("idPostagem") Long idPostagem,
+            @RequestPart("dados") PostagemRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file // Opcional na edição
+    ) {
+
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Usuário não autenticado.");
+        }
+
+        try {
+            String emailLogado = principal.getName();
+
+            postagemServicoService.editarPostagemServico(emailLogado, idPostagem, request, file);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body("Erro ao editar: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok().body("Postagem e Serviço atualizados com sucesso!");
     }
 
     @GetMapping(path = "/get/{cnpj}",produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -102,22 +128,5 @@ public class PostagemController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "/edit/{idPostagem}",consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> editarPostagemServico(Principal principal, @PathVariable("idPostagem") Long idPostagem, @RequestBody PostagemRequest request){
 
-        if (principal == null) {
-            return ResponseEntity.status(401).body("Usuário não autenticado.");
-        }
-
-        try {
-            String emailLogado = principal.getName();
-
-            postagemServicoService.editarPostagemServico(emailLogado, idPostagem, request);
-
-        } catch (Exception e) {
-            return ResponseEntity.status(403).body("Erro ao editar: " + e.getMessage());
-        }
-
-        return ResponseEntity.ok().body("Postagem e Serviço atualizados com sucesso!");
-    }
 }

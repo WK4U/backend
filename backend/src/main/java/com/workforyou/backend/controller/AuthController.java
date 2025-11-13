@@ -9,11 +9,10 @@ import com.workforyou.backend.repository.UsuarioRepository;
 import com.workforyou.backend.service.RegistroService;
 import com.workforyou.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.Map;
@@ -27,10 +26,13 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
 
-    @PostMapping(path = "/register" , consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<?> register(@RequestBody RegistroRequest request) {
-        try{
-            registroService.salvarNovoUsuario(request);
+    @PostMapping(path = "/register", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> register(
+            @RequestPart("dados") RegistroRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) {
+        try {
+            registroService.salvarNovoUsuario(request, file);
             return ResponseEntity.ok("Conta registrada com sucesso!");
         } catch (RuntimeException ex) {
             return ResponseEntity.status(409).body(ex.getMessage());
@@ -103,18 +105,19 @@ public class AuthController {
         return ResponseEntity.ok("Senha redefinida com sucesso");
     }
 
-    @PatchMapping("/edit")
-    public ResponseEntity<?> editarConta(@RequestBody RegistroRequest request,Principal principal){
+    @PatchMapping(path = "/edit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> editarConta(
+            @RequestPart("dados") RegistroRequest request,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            Principal principal
+    ) {
         if (principal == null) {
             return ResponseEntity.status(401).body("Usuário não autenticado.");
         }
         try {
             String emailLogado = principal.getName();
-
-            registroService.editarUsuario(emailLogado, request);
-
+            registroService.editarUsuario(emailLogado, request, file);
             return ResponseEntity.ok("Perfil atualizado com sucesso!");
-
         } catch (RuntimeException ex) {
             return ResponseEntity.status(404).body(ex.getMessage());
         }

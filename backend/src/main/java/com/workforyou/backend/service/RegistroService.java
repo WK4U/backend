@@ -4,6 +4,7 @@ import com.workforyou.backend.dto.RegistroRequest;
 import com.workforyou.backend.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class RegistroService {
@@ -23,11 +24,17 @@ public class RegistroService {
     @Autowired
     private PrestadorService prestadorService;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
-
-    public void salvarNovoUsuario(RegistroRequest request) {
+    public void salvarNovoUsuario(RegistroRequest request,MultipartFile file) {
         if(usuarioService.verificarEmailExistente(request.getEmail())){
             throw new RuntimeException("Este e-mail já está em uso.");
+        }
+
+        if (file != null && !file.isEmpty()) {
+            String urlDaFoto = cloudinaryService.uploadImagem(file);
+            request.setUriFoto(urlDaFoto);
         }
 
         if (request.getTipoUsuario().equalsIgnoreCase("FISICO")) {
@@ -72,8 +79,13 @@ public class RegistroService {
         }
     }
 
-    public void editarUsuario(String emailUsuarioLogado, RegistroRequest request){
+    public void editarUsuario(String emailUsuarioLogado, RegistroRequest request,MultipartFile file){
         Usuario usuario = usuarioService.getUsuarioPorEmail(emailUsuarioLogado);
+
+        if (file != null && !file.isEmpty()) {
+            String urlDaFoto = cloudinaryService.uploadImagem(file);
+            request.setUriFoto(urlDaFoto);
+        }
 
         if(usuario.getTipoUsuario() == 'f'){
             Cliente cliente = clienteService.getClientePorEmail(emailUsuarioLogado);

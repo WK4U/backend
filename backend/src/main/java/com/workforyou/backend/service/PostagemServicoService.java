@@ -7,6 +7,7 @@ import com.workforyou.backend.model.Usuario;
 import com.workforyou.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,19 +23,27 @@ public class PostagemServicoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void salvarPostagemServico(String nomeServico, String tipoServico, String descricaoS, String descricaoP, String cnpj, String foto){
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    public void salvarPostagemServico(String nomeServico, String tipoServico, String descricaoS, String descricaoP, String cnpj, MultipartFile foto){
+
+        String urlFoto = null;
+        if (foto != null && !foto.isEmpty()) {
+            urlFoto = cloudinaryService.uploadImagem(foto);
+        }
 
         Servico servico = servicoService.salvarServico(nomeServico,tipoServico,descricaoS,cnpj);
 
         postagemService.salvarNovaPostagem(
-                foto,
+                urlFoto,
                 descricaoP,
                 cnpj,
                 servico.getId()
         );
     }
 
-    public void editarPostagemServico(String emailLogado, Long idPostagem, PostagemRequest request){
+    public void editarPostagemServico(String emailLogado, Long idPostagem, PostagemRequest request,MultipartFile novaFoto){
         if(usuarioRepository.findByEmail(emailLogado).isEmpty()){
             throw new RuntimeException("Usuário não encontrado com esse email!");
         }
@@ -44,6 +53,11 @@ public class PostagemServicoService {
 
         if (!postagem.getPrestador().getPessoaJuridica().getCnpj().equals(usuarioLogado.getDocumento())) { //
             throw new RuntimeException("Acesso negado. Você não é o dono desta postagem.");
+        }
+
+        if (novaFoto != null && !novaFoto.isEmpty()) {
+            String urlNova = cloudinaryService.uploadImagem(novaFoto);
+            request.setFoto(urlNova);
         }
 
         Servico servicoParaEditar = postagem.getServico();

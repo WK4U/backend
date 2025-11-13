@@ -24,7 +24,6 @@ public class PostagemRequest {
     @NotBlank(message = "A descrição da postagem é obrigatória")
     private String descricaoPostagem; // Mudei de 'descricaoP' para um nome claro
 
-    @NotBlank(message = "A foto é obrigatória")
     private String foto;
 
     // Chave de ligação
