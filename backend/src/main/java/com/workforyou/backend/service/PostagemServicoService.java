@@ -1,6 +1,8 @@
 package com.workforyou.backend.service;
 
 import com.workforyou.backend.dto.PostagemRequest;
+import com.workforyou.backend.dto.PostagemResponse;
+import com.workforyou.backend.dto.UsuarioPerfilResponse;
 import com.workforyou.backend.model.Postagem;
 import com.workforyou.backend.model.Prestador;
 import com.workforyou.backend.model.Servico;
@@ -37,28 +39,59 @@ public class PostagemServicoService {
             MultipartFile foto
     ) {
 
+        // Upload da imagem
         String urlFoto = null;
         if (foto != null && !foto.isEmpty()) {
             urlFoto = cloudinaryService.uploadImagem(foto);
         }
 
+        // Cria ou atualiza serviço
         Servico servico = servicoService.salvarServico(tipoServico, cnpj);
 
+        // Busca o prestador pelo CNPJ
         Prestador prestador = prestadorRepository.findByCnpj(cnpj)
                 .orElseThrow(() -> new RuntimeException("Prestador não encontrado para o CNPJ: " + cnpj));
 
+        String nomePrestador = prestador.getPessoaJuridica().getNome();
+
+        // Criando postagem
         Postagem postagem = new Postagem();
         postagem.setUrlFoto(urlFoto);
         postagem.setTipoServico(tipoServico);
         postagem.setDescricaoPostagem(descricaoPostagem);
         postagem.setCnpj(cnpj);
-
         postagem.setPrestador(prestador);
-        postagem.setServico(servico);  // <--- ESSA LINHA RESOLVE A DUPLICAÇÃO
+        postagem.setServico(servico);
+        postagem.setNomePrestador(nomePrestador);
 
+        // Salva postagem
         postagemRepository.save(postagem);
+
+        // DEBUG opcional: ver nome do prestador
+        System.out.println("Postagem salva para prestador: "
+                + prestador.getPessoaJuridica().getNome());
     }
 
+
+
+
+        public PostagemResponse toResponse(Postagem postagem) {
+            UsuarioPerfilResponse perfilPrestador = UsuarioPerfilResponse.builder()
+                    .id(postagem.getPrestador().getId())
+                    .nome(postagem.getNomePrestador()) // usa o campo do banco!
+                    .email(postagem.getPrestador().getEmail())
+                    .cnpj(postagem.getCnpj())
+                    .foto(postagem.getPrestador().getUrlFoto())
+                    .build();
+
+            return PostagemResponse.builder()
+                    .id(postagem.getId())
+                    .tipoServico(postagem.getTipoServico())
+                    .descricaoPostagem(postagem.getDescricaoPostagem())
+                    .foto(postagem.getUrlFoto())
+                    .prestador(perfilPrestador)
+                    .build();
+        }
 
     public void editarPostagemServico(String emailLogado,
                                       Long idPostagem,
@@ -127,5 +160,9 @@ public class PostagemServicoService {
 
         postagemService.excluirPost(idPostagem);
         servicoService.excluirServ(idServico);
+    }
+    public Postagem getPorId(Long id) {
+        return postagemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Postagem não encontrada!"));
     }
 }

@@ -2,6 +2,7 @@ package com.workforyou.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workforyou.backend.dto.PostagemRequest;
+import com.workforyou.backend.dto.PostagemResponse;
 import com.workforyou.backend.model.Postagem;
 import com.workforyou.backend.model.Usuario;
 import com.workforyou.backend.service.PostagemServicoService;
@@ -86,6 +87,19 @@ public class PostagemController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getPorId(@PathVariable("id") Long id) {
+        try {
+            Postagem postagem = postagemServicoService.getPorId(id); // método que busca a postagem pelo ID
+            PostagemResponse response = postagemServicoService.toResponse(postagem); // monta o DTO de resposta
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body("Postagem não encontrada: " + e.getMessage());
+        }
+    }
+
+
     @PutMapping(path = "/edit/{idPostagem}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editarPostagemServico(
             Principal principal,

@@ -41,6 +41,7 @@ public class Postagem {
     // Relacionamentos existentes
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"servicos", "postagens", "pessoaJuridica"})
+
     @JoinColumn(name = "id_prestador")
     private Prestador prestador;
 
@@ -48,4 +49,7 @@ public class Postagem {
     @JsonIgnoreProperties({"prestador"})
     @JoinColumn(name = "id_servico")
     private Servico servico;
+
+    @Column(name = "nome_prestador")
+    private String nomePrestador;
 }
