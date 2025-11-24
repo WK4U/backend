@@ -1,0 +1,18 @@
+package com.workforyou.backend.repository;
+
+import com.workforyou.backend.model.Postagem;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface PostagemRepository extends JpaRepository<Postagem, Long> {
+
+    Optional<Postagem> findByServicoId(Long idServico);
+
+    Optional<List<Postagem>> findByPrestadorPessoaJuridicaCnpj(String cnpj);
+//    Optional<Postagem> findByNomeServicoAndTipoServicoAndCnpj( String cnpj);
+    Optional<List<Postagem>> findByServicoTipoServico(String tipoServico);
+}
