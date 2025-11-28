@@ -20,6 +20,7 @@ public class UsuarioPerfilResponse {
     private String cpf;
     private String cnpj;
     private String foto; // URL da foto
+    private String telefone; //adicionei agora
 
     public static UsuarioPerfilResponse from(
             Usuario usuario,
@@ -36,12 +37,14 @@ public class UsuarioPerfilResponse {
         String nome = null;
         String cpf = null;
         String cnpj = null;
+        String telefone  = null;
 
         if (isCliente && cliente != null) {
             foto = cliente.getUrlFoto();
             if (cliente.getPessoaFisica() != null) {
                 nome = cliente.getPessoaFisica().getNome();
                 cpf = cliente.getPessoaFisica().getCpf();
+                telefone = cliente.getPessoaFisica().getTelefone();
             }
         }
 
@@ -50,6 +53,7 @@ public class UsuarioPerfilResponse {
             if (prestador.getPessoaJuridica() != null) {
                 nome = prestador.getPessoaJuridica().getNome();
                 cnpj = prestador.getPessoaJuridica().getCnpj();
+                telefone = prestador.getPessoaJuridica().getTelefone();
             }
         }
 
@@ -66,6 +70,7 @@ public class UsuarioPerfilResponse {
                 .email(usuario.getEmail())
                 .cpf(cpf)
                 .cnpj(cnpj)
+                .telefone(telefone)
                 .foto(foto)
                 .build();
     }
