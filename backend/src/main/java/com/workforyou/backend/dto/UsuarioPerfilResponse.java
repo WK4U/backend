@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -19,8 +20,9 @@ public class UsuarioPerfilResponse {
     private String email;
     private String cpf;
     private String cnpj;
-    private String foto; // URL da foto
-    private String telefone; //adicionei agora
+    private String foto;
+    private String telefone;
+    private LocalDate dataNascimento; // O campo já existia aqui
 
     public static UsuarioPerfilResponse from(
             Usuario usuario,
@@ -38,6 +40,7 @@ public class UsuarioPerfilResponse {
         String cpf = null;
         String cnpj = null;
         String telefone  = null;
+        LocalDate dataNascimento = null; // 1. CRIEI A VARIÁVEL AQUI
 
         if (isCliente && cliente != null) {
             foto = cliente.getUrlFoto();
@@ -45,6 +48,9 @@ public class UsuarioPerfilResponse {
                 nome = cliente.getPessoaFisica().getNome();
                 cpf = cliente.getPessoaFisica().getCpf();
                 telefone = cliente.getPessoaFisica().getTelefone();
+
+                // 2. PREENCHI A VARIÁVEL AQUI
+                dataNascimento = cliente.getPessoaFisica().getDataNascimento();
             }
         }
 
@@ -58,7 +64,7 @@ public class UsuarioPerfilResponse {
         }
 
         // fallbacks
-        if (nome == null || nome.isBlank()) nome = usuario.getEmail(); // evita nome vazio
+        if (nome == null || nome.isBlank()) nome = usuario.getEmail();
         if (cpf == null && cnpj == null) {
             if ("F".equalsIgnoreCase(tipo)) cpf = usuario.getDocumento();
             else cnpj = usuario.getDocumento();
@@ -72,6 +78,7 @@ public class UsuarioPerfilResponse {
                 .cnpj(cnpj)
                 .telefone(telefone)
                 .foto(foto)
+                .dataNascimento(dataNascimento) // 3. MANDEI PRO JSON AQUI
                 .build();
     }
 }
