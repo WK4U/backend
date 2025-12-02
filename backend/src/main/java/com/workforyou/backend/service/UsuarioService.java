@@ -2,17 +2,17 @@ package com.workforyou.backend.service;
 import com.workforyou.backend.dto.UsuarioPerfilResponse;
 import com.workforyou.backend.model.*;
 import com.workforyou.backend.repository.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService; // NOVA IMPORTAÇÃO
-import org.springframework.security.core.userdetails.UsernameNotFoundException; // NOVA IMPORTAÇÃO
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.User; // NOVA IMPORTAÇÃO - Classe User do Spring
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Collections; // NOVA IMPORTAÇÃO para listar de permissões vazia
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -30,8 +30,13 @@ public class UsuarioService implements UserDetailsService {
 
     @Autowired
     private  ClienteRepository clienteRepository;
+
     @Autowired
     private PrestadorRepository prestadorRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // MÉTODO OBRIGATÓRIO DA INTERFACE UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -53,7 +58,7 @@ public class UsuarioService implements UserDetailsService {
 
         Usuario user = new Usuario();
         user.setEmail(email);
-        user.setSenha(senha); // A senha já vem criptografada
+        user.setSenha(passwordEncoder.encode(senha));
         user.setTipoUsuario(tipoUsuario);
         user.setDocumento(documento); // CPF ou CNPJ
 
@@ -117,7 +122,7 @@ public class UsuarioService implements UserDetailsService {
 
         Usuario usuario = resetCode.getUsuario();
 
-        usuario.setSenha(novaSenha);
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
         usuarioRepository.save(usuario);
 
         resetCode.setUsado(true);

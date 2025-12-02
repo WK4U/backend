@@ -5,6 +5,7 @@ import com.workforyou.backend.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class RegistroService {
@@ -26,6 +27,9 @@ public class RegistroService {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public void salvarNovoUsuario(RegistroRequest request,MultipartFile file) {
         if(usuarioService.verificarEmailExistente(request.getEmail())){
@@ -81,6 +85,10 @@ public class RegistroService {
 
     public void editarUsuario(String emailUsuarioLogado, RegistroRequest request,MultipartFile file){
         Usuario usuario = usuarioService.getUsuarioPorEmail(emailUsuarioLogado);
+
+        if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
+            throw new RuntimeException("Senha incorreta! Alterações não permitidas.");
+        }
 
         if (file != null && !file.isEmpty()) {
             String urlDaFoto = cloudinaryService.uploadImagem(file);

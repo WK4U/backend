@@ -17,6 +17,7 @@ import com.workforyou.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +35,7 @@ public class AuthController {
     private final ObjectMapper objectMapper;
     private final ClienteRepository clienteRepository;
     private final PrestadorRepository  prestadorRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> register(
@@ -55,7 +57,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         return usuarioRepository.findByEmail(request.getEmail())
                 .map(usuario -> {
-                    if (!usuario.getSenha().equals(request.getSenha())) {
+                    if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
                         return ResponseEntity.status(401).body("Senha inválida");
                     }
                     String token = JwtUtil.gerarToken(usuario.getEmail());
