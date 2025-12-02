@@ -75,24 +75,43 @@ public class PostagemServicoService {
 
 
 
-        public PostagemResponse toResponse(Postagem postagem) {
-            UsuarioPerfilResponse perfilPrestador = UsuarioPerfilResponse.builder()
-                    .id(postagem.getPrestador().getId())
-                    .nome(postagem.getNomePrestador()) // usa o campo do banco!
-                    .email(postagem.getPrestador().getEmail())
-                    .cnpj(postagem.getCnpj())
-                    .foto(postagem.getPrestador().getUrlFoto())
-                    .build();
+    public PostagemResponse toResponse(Postagem postagem) {
+        // Lógica para extrair o telefone
+        String telefoneEncontrado = null;
+        Prestador prestador = postagem.getPrestador();
 
-            return PostagemResponse.builder()
-                    .id(postagem.getId())
-                    .tipoServico(postagem.getTipoServico())
-                    .descricaoPostagem(postagem.getDescricaoPostagem())
-                    .foto(postagem.getUrlFoto())
-                    .prestador(perfilPrestador)
-                    .build();
+        if (prestador != null) {
+            // Verifica se é Pessoa Jurídica e pega o telefone
+            if (prestador.getPessoaJuridica() != null) {
+                telefoneEncontrado = prestador.getPessoaJuridica().getTelefone();
+            }
+            // Se futuramente implementar Pessoa Física no prestador, adicione aqui:
+            // else if (prestador.getPessoaFisica() != null) {
+            //     telefoneEncontrado = prestador.getPessoaFisica().getTelefone();
+            // }
         }
 
+        UsuarioPerfilResponse perfilPrestador = UsuarioPerfilResponse.builder()
+                .id(postagem.getPrestador().getId())
+                .nome(postagem.getNomePrestador())
+                .email(postagem.getPrestador().getEmail())
+                .cnpj(postagem.getCnpj())
+                .foto(postagem.getPrestador().getUrlFoto())
+                .build();
+
+        return PostagemResponse.builder()
+                .id(postagem.getId())
+                .tipoServico(postagem.getTipoServico())
+                .descricaoPostagem(postagem.getDescricaoPostagem())
+                .foto(postagem.getUrlFoto())
+                .prestador(perfilPrestador)
+
+                // --- INJETANDO OS DADOS NA RAIZ DO JSON ---
+                .telefone(telefoneEncontrado)
+                .email(postagem.getPrestador().getEmail())
+                // ------------------------------------------
+                .build();
+    }
     public void editarPostagemServico(String emailLogado,
                                       Long idPostagem,
                                       PostagemRequest request,

@@ -15,4 +15,7 @@ public class PostagemResponse {
     private String descricaoPostagem;
     private String foto;
     private UsuarioPerfilResponse prestador;
+    private String telefone;
+    private String email;
+
 }
