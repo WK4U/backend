@@ -68,8 +68,9 @@ public class PasswordResetCode {
     }
 
     public void setUsado(boolean usado) {
-        this.tempo = tempo;
+        this.tempo = usado;
     }
 }
+
 
 
